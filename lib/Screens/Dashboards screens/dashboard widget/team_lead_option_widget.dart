@@ -55,7 +55,7 @@ class _TeamLeadDashboardButtons extends State<TeamLeadDashboardButtons> {
               btnName: "Manage Leave",
               ontap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => teamLeadLeaveManagement()));
+                    MaterialPageRoute(builder: (_) => Samplescreen()));
               }),
         ],
       ),

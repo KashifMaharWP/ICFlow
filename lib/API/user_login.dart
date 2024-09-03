@@ -35,11 +35,12 @@ class UserLogin {
         print(
             "User Job Type ID: ${UserDetail().jobTypeId}");
       }
-
-      else {
-        print(response.statusCode.toString());
-        showErrorSnackbar("${userJson['message'].toString()}", context);
+      else if(response.statusCode==408){
+        showErrorSnackbar("Please check your internet connection", context);
       }
+      else {
+        showErrorSnackbar("${userJson['message'].toString()}", context);
+        }
     } catch (error) {
       showErrorSnackbar("Server not Responding! Internet connection is unstable", context);
     }

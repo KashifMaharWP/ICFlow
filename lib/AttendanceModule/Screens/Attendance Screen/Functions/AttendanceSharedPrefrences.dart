@@ -36,7 +36,7 @@ class AttendanceSharedPrefrences {
     SharedPreferences pref = await SharedPreferences.getInstance();
     CheckInClass.checkInDate = pref.getString("CheckInDate").toString();
     CheckInClass.checkInTime=pref.getString("CheckInTime").toString();
-    CheckInClass.checkOutTime=pref.getString("CheckOutTime").toString();
+    //CheckInClass.checkOutTime=pref.getString("CheckOutTime").toString();
     print("Shared Preference Data: ${pref.getString("CheckInDate").toString()}");
     }
 

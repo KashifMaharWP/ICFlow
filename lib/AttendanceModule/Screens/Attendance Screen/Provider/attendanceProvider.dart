@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
+import 'package:taskflow_application/AttendanceModule/Screens/Attendance%20Screen/Functions/customAlertBox.dart';
 import '../../../Utills/Global Class/GlobalAPI.dart';
 import 'package:http/http.dart' as http;
 
@@ -60,7 +61,6 @@ class AttendanceProvider extends ChangeNotifier {
     print(body);
 
     try {
-      setisLoading(true);
       print(
           "This is Token : ${Provider.of<UserDetail>(context, listen: false).token}");
       final response = await http.post(Uri.parse(url),
@@ -70,35 +70,40 @@ class AttendanceProvider extends ChangeNotifier {
                 "Bearer ${Provider.of<UserDetail>(context, listen: false).token} "
           },
           body: jsonEncode(body));
-
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body) as Map<String, dynamic>;
         if (json.isNotEmpty) {
           //CheckInClass.checkInTime=DateTime.now().toString();
           showSuccessSnackbar("Check In Successfully", context);
-          print("CheckIn Successfully");
-          print("Response body: ${response.body}");
           AttendanceSharedPrefrences.Set_checkInSharePreference();
           setischeckedIn(true);
           setisLoading(false);
+          //Navigator.pop(context);
+          showStatusLoader(context, "assets/lottie/successfullyDone.json");
         } else {
-          print("Server is Not Responding");
-          showErrorSnackbar("Server is Not Responding", context);
+          //print("{}");
+          showErrorSnackbar("${json['message']}", context);
           setischeckedIn(false);
           setisLoading(false);
+          //Navigator.pop(context);
+          showStatusLoader(context, "assets/lottie/unsuccessful.json");
         }
       } else {
-        print("Error: ${response.statusCode}");
-        print("Response body: ${response.body}");
-        showErrorSnackbar("Server is Not Responding", context);
+        showErrorSnackbar("${json['message'].toString()}", context);
         setischeckedIn(false);
         setisLoading(false);
+       // Navigator.pop(context);
+        showStatusLoader(context, "assets/lottie/unsuccessful.json");
       }
     } catch (e) {
       print("Exception: $e");
       setischeckedIn(false);
       setisLoading(false);
+      //Navigator.pop(context);
+      showStatusLoader(context, "assets/lottie/unsuccessful.json");
     }
+    await Future.delayed(Duration(seconds: 3));
+    Navigator.pop(context);
   }
 
   Future<void> AddCheckOut(
@@ -122,31 +127,32 @@ class AttendanceProvider extends ChangeNotifier {
                 "Bearer ${Provider.of<UserDetail>(context, listen: false).token}"
           },
           body: jsonEncode(body));
+      final json = jsonDecode(response.body);
       print("Here is Status Code: " + response.statusCode.toString());
       if (response.statusCode == 200) {
         showSuccessSnackbar("Check Out Successfully", context);
-        print("CheckOut Successfully");
-        print("Response body: ${response.body}");
         await setischeckedIn(false);
         AttendanceSharedPrefrences.Set_checkOutSharePreference();
         setisLoading(false);
         setIsdisabled(true);
+        showStatusLoader(context, "assets/lottie/successfullyDone.json");
 
       } else {
-        print("Error: ${response.statusCode}");
-        print("Response body: ${response.body}");
-        showErrorSnackbar("There is an Error : ${response.body}", context);
+        showErrorSnackbar("${json['message'].toString()}", context);
         await setischeckedIn(true);
         setisLoading(false);
         setIsdisabled(false);
+        showStatusLoader(context, "assets/lottie/unsuccessful.json");
       }
     } catch (e) {
-      print("Exception: $e");
       showErrorSnackbar("There is an Error Occured : ${e}", context);
       await setischeckedIn(true);
       setisLoading(false);
       setIsdisabled(false);
+      showStatusLoader(context, "assets/lottie/unsuccessful.json");
     }
+    await Future.delayed(Duration(seconds: 3));
+    Navigator.pop(context);
   }
 
   //This Function is used to get Current Month Total Worked Hours
