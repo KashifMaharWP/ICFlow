@@ -72,8 +72,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     );
   }
 
-
-
   Future confirmAttendance(String title, BuildContext context) async {
     // Capture the Provider value before the dialog dismisses
     final attendanceProvider = Provider.of<AttendanceProvider>(context, listen: false);
@@ -182,8 +180,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
     }
   }
-
-
 
   @override
     Widget build(BuildContext context) {

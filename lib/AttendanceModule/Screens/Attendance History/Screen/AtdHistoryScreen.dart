@@ -127,7 +127,6 @@ class _AtdHistoryScreenState extends State<AtdHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String Hours='';
     int currentYear=_currentMonth.year;
     final AtdHistProvider = Provider.of<HistoryProvider>(context);
     return Scaffold(
