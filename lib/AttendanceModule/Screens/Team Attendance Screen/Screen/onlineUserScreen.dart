@@ -4,11 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ColorHelper.dart';
-import '../../../AttendanceModule/Screens/Attendance History/Attendance History Shimmer/AttendanceHistoryShimmerScreen.dart';
-import '../../../AttendanceModule/Utills/Global Class/ScreenSize.dart';
-import 'Model/TeamAttendanceModel.dart';
-import 'Model/ViewTodyAttendanceModel.dart';
-import 'Provider/TeamAttendanceProvider.dart';
+import '../../Attendance History/Attendance History Shimmer/AttendanceHistoryShimmerScreen.dart';
+import '../../../Utills/Global Class/ScreenSize.dart';
+import '../Model/AbsentUserModel.dart';
+import '../Model/ViewTodyAttendanceModel.dart';
+import '../Provider/TeamAttendanceProvider.dart';
 
 class ViewAttendance extends StatefulWidget {
   ViewAttendance({super.key});

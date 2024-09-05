@@ -187,6 +187,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
   @override
     Widget build(BuildContext context) {
+    midNightTimer().MidNightTimerCheck();
       return Scaffold(
         appBar: AppBar(
           title: Text(

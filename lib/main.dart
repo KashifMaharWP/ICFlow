@@ -12,6 +12,7 @@ import 'package:taskflow_application/Screens/Login%20screens/login_page.dart';
 
 import 'AttendanceModule/Provider/Authentication Provider/authProvider.dart';
 import 'AttendanceModule/Screens/Attendance History/Provider/HistoryProvider.dart';
+import 'AttendanceModule/Screens/Attendance Screen/Functions/midNightTimer.dart';
 import 'AttendanceModule/Screens/Attendance Screen/Provider/attendanceProvider.dart';
 import 'AttendanceModule/Screens/LeaveForm Screen/Provider/LeaveFormProvider.dart';
 import 'AttendanceModule/Screens/Team Attendance Screen/Provider/TeamAttendanceProvider.dart';
@@ -42,7 +43,7 @@ class MainApp extends StatelessWidget {
       }
       screenWidth=MediaQuery.of(context).size.width;
       screenHeight=MediaQuery.of(context).size.height;
-
+      midNightTimer().MidNightTimerCheck();
       return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => RegistrationProvider()),

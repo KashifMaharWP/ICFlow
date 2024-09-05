@@ -6,7 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
 import 'package:taskflow_application/API/role_model.dart';
 import 'package:taskflow_application/AttendanceModule/Screens/Attendance%20Screen/Provider/attendanceProvider.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/Team%20Attendance%20Screen/AttendanceView.dart';
+import 'package:taskflow_application/AttendanceModule/Screens/Team%20Attendance%20Screen/Screen/absentUserScreen.dart';
+import 'package:taskflow_application/AttendanceModule/Screens/Team%20Attendance%20Screen/Screen/onlineUserScreen.dart';
 import 'package:taskflow_application/AttendanceModule/Screens/Team%20Attendance%20Screen/Provider/TeamAttendanceProvider.dart';
 import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ColorHelper.dart';
 import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ScreenSize.dart';
@@ -17,7 +18,7 @@ import 'package:taskflow_application/Screens/Dashboards%20screens/dashboard%20wi
 import 'package:taskflow_application/Screens/Dashboards%20screens/dashboard%20widget/user_option_widget.dart';
 import 'package:taskflow_application/Screens/SampleScreen/SampleScreen.dart';
 
-import '../../AttendanceModule/Screens/Team Attendance Screen/Model/TeamAttendanceModel.dart';
+import '../../AttendanceModule/Screens/Team Attendance Screen/Model/AbsentUserModel.dart';
 
 class DashboardPage extends StatefulWidget {
 
@@ -188,23 +189,6 @@ class _DashboardPageState extends State<DashboardPage> {
                           ),
                         ],
                       ),
-                      /*Consumer<TeamAttendanceProvider>(builder: (context,provider,child){
-                        if(provider.isLoading){
-                          return Text("0");
-                        }
-                        else{
-                          Text("${provider.onlineCount}",
-                            style: GoogleFonts.roboto(
-                                textStyle: TextStyle(
-                                    color: lightBlackColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: screenWidth/15
-                                )
-                            ),);
-                        }
-                      }),*/
-
-
 
         Consumer<TeamAttendanceProvider>(
           builder: (context, provider, child) {
@@ -248,61 +232,66 @@ class _DashboardPageState extends State<DashboardPage> {
               width: 1,
             ),
             Expanded(
-                child:Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                child:InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>absentUsers()));
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
 
-                        Text("Offline",
-                          style: GoogleFonts.roboto(
-                              textStyle: TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: screenWidth/25
-                              )
-                          ),),
-                        SizedBox(
-                          width: screenWidth/80,
-                        ),
-                        Container(
-                          height: screenWidth/30,
-                          width: screenWidth/30,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: darkgreyColor,
+                          Text("Absent",
+                            style: GoogleFonts.roboto(
+                                textStyle: TextStyle(
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: screenWidth/25
+                                )
+                            ),),
+                          SizedBox(
+                            width: screenWidth/80,
                           ),
-                        ),
-                      ],
-                    ),
-                    Consumer<TeamAttendanceProvider>(
-                      builder: (context, provider, child) {
-                        if (provider.isLoading==true) {
-                          return Text("0",
-                            style: GoogleFonts.roboto(
-                                textStyle: TextStyle(
-                                    color: lightBlackColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: screenWidth/15
-                                )
-                            ),);
-                        } else {
-                          return Text("${provider.offlineCount}",
-                            style: GoogleFonts.roboto(
-                                textStyle: TextStyle(
-                                    color: lightBlackColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: screenWidth/15
-                                )
-                            ),);
-                        }
-                      },
-                    )
+                          Container(
+                            height: screenWidth/30,
+                            width: screenWidth/30,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: darkgreyColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Consumer<TeamAttendanceProvider>(
+                        builder: (context, provider, child) {
+                          if (provider.isLoading==true) {
+                            return Text("0",
+                              style: GoogleFonts.roboto(
+                                  textStyle: TextStyle(
+                                      color: lightBlackColor,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: screenWidth/15
+                                  )
+                              ),);
+                          } else {
+                            return Text("${provider.offlineCount}",
+                              style: GoogleFonts.roboto(
+                                  textStyle: TextStyle(
+                                      color: lightBlackColor,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: screenWidth/15
+                                  )
+                              ),);
+                          }
+                        },
+                      )
 
-                  ],
+                    ],
+                  ),
                 )),
             Container(color: darkgreyColor,
               height: screenHeight/15,

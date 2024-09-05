@@ -7,7 +7,7 @@ import 'package:taskflow_application/Screens/Manage%20User%20Screens/manage_user
 import 'package:taskflow_application/Screens/Project%20screens/add_project_page.dart';
 import 'package:taskflow_application/Widgets/dashboard_button.dart';
 
-import '../../../AttendanceModule/Screens/Team Attendance Screen/AttendanceView.dart';
+import '../../../AttendanceModule/Screens/Team Attendance Screen/Screen/onlineUserScreen.dart';
 import '../../../AttendanceModule/Screens/Team Attendance Screen/Provider/TeamAttendanceProvider.dart';
 import '../../SampleScreen/SampleScreen.dart';
 

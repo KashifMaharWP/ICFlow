@@ -4,7 +4,7 @@ import 'package:taskflow_application/AttendanceModule/Screens/Attendance%20Scree
 
 import '../Class/CheckInClass.dart';
 
-class MidNightTimer{
+class midNightTimer{
  void MidNightTimerCheck(){
    print("Date Time ${DateFormat("dd MM yyyy").format(DateTime.now())}");
    if(CheckInClass.checkInDate!=DateFormat("dd MM yyyy").format(DateTime.now())){
