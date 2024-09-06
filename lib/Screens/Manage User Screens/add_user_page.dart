@@ -32,7 +32,7 @@ class _AddUserState extends State<AddUser> {
   //here we are initializing the role value variable
   String roleDropdownValue = '1';
   String jobTypeDropdownValue = '1';
-  String designationDropdownValue = '1';
+  String designationDropdownValue = '2';
 
   String comId = "";
   String token = "";
@@ -276,7 +276,7 @@ class _AddUserState extends State<AddUser> {
                               print(roleDropdownValue);
                             });
                           }
-                          
+
                           ),
                     ),
                   )

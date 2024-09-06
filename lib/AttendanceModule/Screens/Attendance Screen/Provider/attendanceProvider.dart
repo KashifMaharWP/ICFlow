@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
 import 'package:taskflow_application/AttendanceModule/Screens/Attendance%20Screen/Functions/customAlertBox.dart';
+import 'package:taskflow_application/AttendanceModule/Screens/LeaveForm%20Screen/LeaveFormScreen.dart';
 import '../../../Utills/Global Class/GlobalAPI.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,6 +28,7 @@ class AttendanceProvider extends ChangeNotifier {
   int workTime=0;
   int remWorkingHrs=0;
   int remWorkingMin=0;
+
   Future<void> setischeckedIn(bool value) async {
     _ischeckedIn = value;
     notifyListeners();
@@ -45,6 +48,24 @@ class AttendanceProvider extends ChangeNotifier {
     _isLoading = value;
     notifyListeners();
   }
+
+
+
+  Future<void> fetchAttendanceData(BuildContext context) async {
+    setisLoading(true);
+    try {
+      await countTotalWorkedMin(context, DateFormat("MMMM").format(DateTime.now()));
+      await countMonthWorkingHrs(context);
+      await CountWorkDays();
+      await CheckMidNight(context);
+    } catch (e) {
+      print("Error: $e");
+      showErrorSnackbar("There was an error: $e", context);
+    } finally {
+      setisLoading(false);
+    }
+  }
+
 
   Future<void> AddCheckIn(
       double latitude, longitude, BuildContext context) async {
@@ -69,7 +90,9 @@ class AttendanceProvider extends ChangeNotifier {
             "Authorization":
                 "Bearer ${Provider.of<UserDetail>(context, listen: false).token} "
           },
-          body: jsonEncode(body));
+          body: jsonEncode(body)).timeout(Duration(seconds: 15),onTimeout: (){
+            return Response("",408);
+      });
       final json = jsonDecode(response.body) as Map<String, dynamic>;
       if (response.statusCode == 200) {
         if (json.isNotEmpty) {
@@ -88,7 +111,11 @@ class AttendanceProvider extends ChangeNotifier {
           //Navigator.pop(context);
           showStatusLoader(context, "assets/lottie/unsuccessful.json");
         }
-      } else {
+      }
+      else if(response.statusCode==408){
+        showErrorSnackbar("Please check your internet connection", context);
+      }
+      else {
         showErrorSnackbar("${json['message'].toString()}", context);
         setischeckedIn(false);
         setisLoading(false);
@@ -126,18 +153,25 @@ class AttendanceProvider extends ChangeNotifier {
             "Authorization":
                 "Bearer ${Provider.of<UserDetail>(context, listen: false).token}"
           },
-          body: jsonEncode(body));
+          body: jsonEncode(body)).timeout(Duration(seconds: 15),onTimeout: (){
+            return Response("", 408);
+      });
       final json = jsonDecode(response.body);
       print("Here is Status Code: " + response.statusCode.toString());
       if (response.statusCode == 200) {
         showSuccessSnackbar("Check Out Successfully", context);
         await setischeckedIn(false);
         AttendanceSharedPrefrences.Set_checkOutSharePreference();
+        fetchAttendanceData(context);
         setisLoading(false);
         setIsdisabled(true);
         showStatusLoader(context, "assets/lottie/successfullyDone.json");
 
-      } else {
+      }
+      else if(response.statusCode==408){
+        showErrorSnackbar("Please check your internet connection", context);
+      }
+      else {
         showErrorSnackbar("${json['message'].toString()}", context);
         await setischeckedIn(true);
         setisLoading(false);
@@ -218,19 +252,17 @@ class AttendanceProvider extends ChangeNotifier {
     remWorkingMin=totalRemWorkedMin % 60;
   }
 
-
-
-
-
-
-
   Future<void> CheckMidNight(BuildContext context) async {
     String currentDate = DateFormat("dd MM yyyy").format(DateTime.now());
-    AttendanceSharedPrefrences.Get_checkInSharePreference();
     if (CheckInClass.checkInDate != currentDate) {
       CheckInClass.checkInTime = '--|--';
       CheckInClass.checkOutTime = '--|--';
       setIsdisabled(false);
+    }
+    else{
+      AttendanceSharedPrefrences.Get_checkInSharePreference();
+      AttendanceSharedPrefrences.Get_checkOutSharePreference();
+      //setIsdisabled(true);
     }
   }
 }

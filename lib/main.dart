@@ -43,7 +43,6 @@ class MainApp extends StatelessWidget {
       }
       screenWidth=MediaQuery.of(context).size.width;
       screenHeight=MediaQuery.of(context).size.height;
-      midNightTimer().MidNightTimerCheck();
       return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => RegistrationProvider()),

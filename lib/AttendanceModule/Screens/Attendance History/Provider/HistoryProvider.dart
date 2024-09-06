@@ -27,39 +27,6 @@ class HistoryProvider extends ChangeNotifier{
     notifyListeners(); // This will trigger the Consumer to rebuild
   }
 
-  /*Future GetMonthData(String month, BuildContext context)async {
-
-    String URL="${ApiDetail.BaseAPI}${ApiDetail.AtdHistory}augest";
-    try{
-      Response response=await http.get(Uri.parse(URL),
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer ${UserDataList.token} "
-          }
-      );
-      if(response.statusCode==200){
-        final data=json.decode(response.body)as Map<String, dynamic>;
-        List<Attendance> loadedAttendance=[];
-        data['monthAttendance'].forEach((item){
-          loadedAttendance.add(Attendance.fromJson(item));
-        });
-        _attendanceList=loadedAttendance;
-        notifyListeners();
-        //AtdHistoryClass.CheckIn=json['checkIn'];
-        //AtdHistoryClass.CheckOut=json['checkOut'];
-        //print(json);
-        //print("CheckIn Data: "+_attendanceList[1].checkOutTime.toString());
-      }
-      else{
-        showErrorSnackbar("There is Something Wrong Please Try Again", context);
-      }
-    }
-    catch(e){
-      showErrorSnackbar("There is Error Occured : ${e}", context);
-      print(e);
-        }
-  }*/
-
 Future<AttendanceHistoryModel> GetAttendanceData(String month,BuildContext context) async {
   String URL="${ApiDetail.BaseAPI}${ApiDetail.AtdHistory}${month}";
   try{

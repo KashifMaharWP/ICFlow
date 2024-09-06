@@ -9,6 +9,7 @@ class ApiDetail{
   static String ViewTeamAttendance="attendance/getMyTeamMemberAttendanceStatus";
   static String ViewWorkingHrs="attendance/myWorkingHours/";
   static String absentUsers="attendance/getAllTodayAbsentUsers";
+  static String presentUsers="attendance/getAllTodayPresentUsers";
 }
 
 

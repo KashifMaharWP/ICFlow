@@ -32,33 +32,6 @@ class _AtdHistoryScreenState extends State<AtdHistoryScreen> {
 
 
 
-
-  String _getStatusText(String status) {
-    switch (status) {
-      case 'present':
-        return 'P'; // Present
-      case 'absent':
-        return 'A'; // Absent
-      case 'leave':
-        return 'L'; // Closed or any other status
-      default:
-        return 'W'; // Unknown status
-    }
-  }
-
-  Color _getBackgroundColor(String status) {
-    switch (status) {
-      case 'present':
-        return Colors.blue; // Color for Present
-      case 'absent':
-        return Colors.red; // Color for Absent
-      case 'leave':
-        return Colors.orange; // Color for Closed or any other status
-      default:
-        return Colors.yellow; // Color for unknown status
-    }
-  }
-
   void _showMonthPicker(DateTime selectedMonth,currentYear,currentMonth) async {
     final customMonthPicker = CustomMonthPicker(
       initialSelectedMonth: selectedMonth, //DateTime.now(),
@@ -273,8 +246,8 @@ class _AtdHistoryScreenState extends State<AtdHistoryScreen> {
                                   itemCount: attendanceData.length,
                                   itemBuilder: (context, index) {
                                      return Container(
-                                      margin: EdgeInsets.only(top: 10, bottom: 10),
-                                      height: MediaQuery.of(context).size.height / 5,
+                                      margin: EdgeInsets.only(top: 5, bottom: 5),
+                                      height: MediaQuery.of(context).size.height / 8,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(10),
@@ -328,8 +301,8 @@ class _AtdHistoryScreenState extends State<AtdHistoryScreen> {
                                                                       textStyle: TextStyle(
                                                                           color:
                                                                           lightBlackColor,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          fontSize: screenWidth / 22
+                                                                          fontWeight: FontWeight.w400,
+                                                                          fontSize: screenWidth / 25
                                                                       )),
                                                                 ),
                                                                 Text(
@@ -354,8 +327,8 @@ class _AtdHistoryScreenState extends State<AtdHistoryScreen> {
                                                                     style: GoogleFonts.roboto(
                                                                         textStyle: TextStyle(
                                                                             color:lightBlackColor,
-                                                                            fontWeight: FontWeight.w500,
-                                                                            fontSize: screenWidth/22
+                                                                            fontWeight: FontWeight.w400,
+                                                                            fontSize: screenWidth/25
                                                                         )
                                                                     ),),
                                                                   Text("Check Out",
@@ -379,8 +352,8 @@ class _AtdHistoryScreenState extends State<AtdHistoryScreen> {
                                                                     "${attendanceData[index].duration?.hours.toString()??'0'} Hr, ${attendanceData[index].duration?.minutes.toString()??'0'} Min", style: GoogleFonts.roboto(
                                                                         textStyle: TextStyle(
                                                                             color:lightBlackColor,
-                                                                            fontWeight: FontWeight.w500,
-                                                                            fontSize: screenWidth/22
+                                                                            fontWeight: FontWeight.w400,
+                                                                            fontSize: screenWidth/25
                                                                         )
                                                                     ),),
                                                                   Text("Duration",

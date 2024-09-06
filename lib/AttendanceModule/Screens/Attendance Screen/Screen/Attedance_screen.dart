@@ -33,9 +33,6 @@ class AttendanceScreen extends StatefulWidget {
 
 class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
-  String checkIn = '--|--';
-  String checkOut = '--|--';
-  double progressvalue = 20;
   String CurrentMonth = DateFormat("MMMM").format(DateTime.now());
   int monthWorkingHrs = 0;
   bool load=false;
@@ -46,18 +43,18 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     super.initState();
     final atdProvider = Provider.of<AttendanceProvider>(context, listen: false);
     atdProvider.loadCheckInStatus();
-    atdProvider.countTotalWorkedMin(context, CurrentMonth);
+    atdProvider.fetchAttendanceData(context);
   }
   void refresh(){
     final atdProvider = Provider.of<AttendanceProvider>(context, listen: false);
-    atdProvider.countTotalWorkedMin(context, CurrentMonth);
+    atdProvider.fetchAttendanceData;
     }
 
   showLoaderDialog(BuildContext context){
     AlertDialog alert = AlertDialog(
       content: Container(
-        width: screenWidth / 2, // Set the desired width
-        height: screenHeight / 6, // Set the desired height
+        width: screenWidth / 2,
+        height: screenHeight / 6,
         child: Center(
           child: LoadingAnimationWidget.hexagonDots(color: primary, size: screenWidth / 5),
         ),
@@ -78,7 +75,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     // Capture the Provider value before the dialog dismisses
     final attendanceProvider = Provider.of<AttendanceProvider>(context, listen: false);
     bool isCheckedIn = attendanceProvider.ischeckedIn;
-    bool isLoading=attendanceProvider.isLoading;
 
     // Show the confirm dialog
     bool shouldProceed = await showDialog(
@@ -175,8 +171,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       showLoaderDialog(context);
         if (!isCheckedIn) {
           await getCurrentLocationCheckInTime(context);
+          refresh();
         } else {
           await getCurrentLocationCheckOutTime(context);
+          refresh();
         }
         Navigator.pop(context);
 
@@ -188,7 +186,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
     Widget build(BuildContext context) {
     midNightTimer().MidNightTimerCheck();
-      return Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: Text(
             "Attendance",
@@ -384,7 +382,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                   fontSize: screenWidth / 25)),
                         ),
                         Text(
-                          CheckInClass.checkOutTime,
+                          CheckInClass.checkOutTime??'--|--',
                           style: GoogleFonts.roboto(
                               textStyle: TextStyle(
                                   color: lightBlackColor,
@@ -488,7 +486,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           children: [
             SimpleCustomCard(
               label: "Working Hours",
-              progressValue: "${workingHrs}",
+              progressValue: "${workingHrs} Hrs",
               color: blackColor,
               headingColor: primary,
               backgroundColor: whiteColor,
@@ -500,7 +498,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 builder: (context, provider, child) {
                   return SimpleCustomCard(
                     label: "Remaining",
-                    progressValue: "${atdProvider.remWorkingHrs} : ${atdProvider.remWorkingMin}",
+                    progressValue: "${atdProvider.remWorkingHrs} Hrs : ${atdProvider.remWorkingMin} Min",
                     color: blackColor,
                     headingColor: primary,
                     backgroundColor: whiteColor,

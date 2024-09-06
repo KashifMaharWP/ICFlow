@@ -9,6 +9,7 @@ import 'package:taskflow_application/AttendanceModule/Screens/Attendance%20Scree
 import 'package:taskflow_application/AttendanceModule/Screens/Team%20Attendance%20Screen/Screen/absentUserScreen.dart';
 import 'package:taskflow_application/AttendanceModule/Screens/Team%20Attendance%20Screen/Screen/onlineUserScreen.dart';
 import 'package:taskflow_application/AttendanceModule/Screens/Team%20Attendance%20Screen/Provider/TeamAttendanceProvider.dart';
+import 'package:taskflow_application/AttendanceModule/Screens/Team%20Attendance%20Screen/Screen/presentUserScreen.dart';
 import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ColorHelper.dart';
 import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ScreenSize.dart';
 import 'package:taskflow_application/Classes/Device_Info.dart';
@@ -18,7 +19,6 @@ import 'package:taskflow_application/Screens/Dashboards%20screens/dashboard%20wi
 import 'package:taskflow_application/Screens/Dashboards%20screens/dashboard%20widget/user_option_widget.dart';
 import 'package:taskflow_application/Screens/SampleScreen/SampleScreen.dart';
 
-import '../../AttendanceModule/Screens/Team Attendance Screen/Model/AbsentUserModel.dart';
 
 class DashboardPage extends StatefulWidget {
 
@@ -42,12 +42,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
   //function to get the activity status of the users of the company
   getUserActivity(String userRole){
-    if(userRole == "1"){
-
+    if(userRole != "3"){
       //get all the users activity
-    }
-    else if(userRole == "2"){
-      //get the team lead members activity
+      Provider.of<TeamAttendanceProvider>(context, listen: false).fetchTeamAttendanceData(context);
     }
   }
 
@@ -298,43 +295,48 @@ class _DashboardPageState extends State<DashboardPage> {
               width: 1,
             ),
             Expanded(
-                child:Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Total",
-                      style: GoogleFonts.roboto(
-                          textStyle: TextStyle(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.bold,
-                              fontSize: screenWidth/25
-                          )
-                      ),),
-                    Consumer<TeamAttendanceProvider>(
-                      builder: (context, provider, child) {
-                        if (provider.isLoading==true) {
-                          return Text("0",
-                            style: GoogleFonts.roboto(
-                                textStyle: TextStyle(
-                                    color: lightBlackColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: screenWidth/15
-                                )
-                            ),);
-                        } else {
-                          return Text("${provider.totalCount}",
-                            style: GoogleFonts.roboto(
-                                textStyle: TextStyle(
-                                    color: lightBlackColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: screenWidth/15
-                                )
-                            ),);
-                        }
-                      },
-                    )
+                child:InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>presentUsers()));
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Present",
+                        style: GoogleFonts.roboto(
+                            textStyle: TextStyle(
+                                color: Colors.black54,
+                                fontWeight: FontWeight.bold,
+                                fontSize: screenWidth/25
+                            )
+                        ),),
+                      Consumer<TeamAttendanceProvider>(
+                        builder: (context, provider, child) {
+                          if (provider.isLoading==true) {
+                            return Text("0",
+                              style: GoogleFonts.roboto(
+                                  textStyle: TextStyle(
+                                      color: lightBlackColor,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: screenWidth/15
+                                  )
+                              ),);
+                          } else {
+                            return Text("${provider.presentCount}",
+                              style: GoogleFonts.roboto(
+                                  textStyle: TextStyle(
+                                      color: lightBlackColor,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: screenWidth/15
+                                  )
+                              ),);
+                          }
+                        },
+                      )
 
-                  ],
+                    ],
+                  ),
                 )),
           ],
         ),

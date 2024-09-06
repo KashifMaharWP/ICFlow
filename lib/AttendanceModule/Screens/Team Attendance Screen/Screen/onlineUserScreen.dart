@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ColorHelper.dart';
 import '../../Attendance History/Attendance History Shimmer/AttendanceHistoryShimmerScreen.dart';
 import '../../../Utills/Global Class/ScreenSize.dart';
-import '../Model/AbsentUserModel.dart';
 import '../Model/ViewTodyAttendanceModel.dart';
 import '../Provider/TeamAttendanceProvider.dart';
 
@@ -51,7 +50,7 @@ class _ViewAttendanceState extends State<ViewAttendance> {
         centerTitle: true,
       ),
       body: Container(
-        padding: EdgeInsets.all(screenWidth/20),
+        padding: EdgeInsets.all(screenWidth/18),
         child: Column(
           children: [
             Container(
@@ -101,8 +100,8 @@ class _ViewAttendanceState extends State<ViewAttendance> {
                           itemCount: attendanceData.length,
                           itemBuilder: (context, index) {
                             return Container(
-                              margin: EdgeInsets.only(top: 10, bottom: 10),
-                              height: MediaQuery.of(context).size.height / 6,
+                              margin: EdgeInsets.only(top: 5, bottom: 5),
+                              height: screenHeight / 8,
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(10),
@@ -114,13 +113,13 @@ class _ViewAttendanceState extends State<ViewAttendance> {
                                 ],
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(10),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                           CircleAvatar(
-                                            radius: screenWidth/10,
+                                            radius: screenWidth/12,
                                             backgroundImage:
                                             AssetImage('assets/images/usericon.png')
                                           ),
@@ -137,7 +136,7 @@ class _ViewAttendanceState extends State<ViewAttendance> {
                                           ),
                                           Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 attendanceData[index].user!.fullName??"",
@@ -145,7 +144,7 @@ class _ViewAttendanceState extends State<ViewAttendance> {
                                                   textStyle: TextStyle(
                                                     color: primary, // Use your primary color variable
                                                     fontWeight: FontWeight.w400,
-                                                    fontSize: MediaQuery.of(context).size.width / 18,
+                                                    fontSize: MediaQuery.of(context).size.width / 20,
                                                   ),
                                                 ),
                                               ),
@@ -160,8 +159,8 @@ class _ViewAttendanceState extends State<ViewAttendance> {
                                                             textStyle: TextStyle(
                                                                 color:
                                                                 lightBlackColor,
-                                                                fontWeight: FontWeight.w500,
-                                                                fontSize: screenWidth / 22
+                                                                fontWeight: FontWeight.w400,
+                                                                fontSize: screenWidth / 24
                                                             )),
                                                       ),
                                                       Text(

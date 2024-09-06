@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:taskflow_application/API/designation_model.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
+import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ScreenSize.dart';
 import 'package:taskflow_application/Classes/Device_Info.dart';
 import 'package:taskflow_application/Classes/manageUser_class.dart';
 import 'package:taskflow_application/Widgets/textfield.dart';
@@ -237,10 +238,11 @@ class _ProfilePageState extends State<UserProfilePage> {
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(width: 1, color: Colors.grey))),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           //first row to display icon and name of the field
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Icon(
                 fieldIcon,
@@ -250,17 +252,22 @@ class _ProfilePageState extends State<UserProfilePage> {
                 width: 5,
               ),
               Text(
-                title,
+                "${title} :",
                 style: TextStyle(color: Colors.black.withOpacity(0.7)),
               ),
             ],
           ),
-          const Spacer(),
+          SizedBox(width: screenWidth/24,),
           //here we are displaying the user details
-          Text(
-            displayData,
-            style: TextStyle(color: Colors.black.withOpacity(0.7)),
+          Flexible(
+            child: Text(
+              textAlign: TextAlign.end,
+              displayData,
+              style: TextStyle(color: Colors.black.withOpacity(0.7)),
+            ),
           )
+
+
         ],
       ),
     );

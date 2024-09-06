@@ -3,48 +3,49 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:taskflow_application/AttendanceModule/Screens/Team%20Attendance%20Screen/Model/PresentUserModel.dart';
 import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ColorHelper.dart';
 import '../../Attendance History/Attendance History Shimmer/AttendanceHistoryShimmerScreen.dart';
 import '../../../Utills/Global Class/ScreenSize.dart';
 import '../Model/AbsentUserModel.dart';
 import '../Provider/TeamAttendanceProvider.dart';
 
-class absentUsers extends StatefulWidget {
-  absentUsers({super.key});
+class presentUsers extends StatefulWidget {
+  presentUsers({super.key});
 
   @override
-  State<absentUsers> createState() => _absentUsersState();
+  State<presentUsers> createState() => _presentUsersState();
 }
 
-class _absentUsersState extends State<absentUsers> {
+class _presentUsersState extends State<presentUsers> {
   String CurrentDate =
   DateFormat("EEEE MMMM yyyy").format(DateTime.now()).toString();
 
-  Future<AbsentUserModel>? _absentUser;
+  Future<PresentUserModel>? _presentUser;
 
   @override
   void initState() {
     super.initState();
-    _fetchAbsentData();
+    _fetchPresentData();
   }
 
-  void _fetchAbsentData() {
+  void _fetchPresentData() {
     setState(() {
-      _absentUser =
+      _presentUser =
           Provider.of<TeamAttendanceProvider>(context, listen: false)
-              .getAbsentUser(context);
+              .getPrsentUser(context);
     });
   }
 
   Future<void>Refresh()async{
-    _fetchAbsentData();
+    _fetchPresentData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("View Absent User"),
+        title: const Text("View Present User"),
         foregroundColor: Colors.white,
         backgroundColor: Colors.redAccent.shade700,
         centerTitle: true,
@@ -68,8 +69,8 @@ class _absentUsersState extends State<absentUsers> {
             Consumer<TeamAttendanceProvider>(
                 builder: (context, historyProvider, child) {
                   return Expanded(
-                      child: FutureBuilder<AbsentUserModel>(
-                        future:_absentUser,
+                      child: FutureBuilder<PresentUserModel>(
+                        future:_presentUser,
                         builder: (context, dataSnapshot) {
                           if (dataSnapshot.connectionState == ConnectionState.waiting) {
                             return AttendanceHistoryShimmer();
@@ -77,11 +78,11 @@ class _absentUsersState extends State<absentUsers> {
                             return Center(child: Text('An error occurred! ${dataSnapshot.error}'));
                           }
                           else if(dataSnapshot.hasData){
-                            final absentUserDatasnap = dataSnapshot.data;
-                            final absentRecord = absentUserDatasnap?.absentUsers;
-                            if(absentRecord==null){
+                            final presentUserDatasnap = dataSnapshot.data;
+                            final presentRecord = presentUserDatasnap?.presentUsers;
+                            if(presentRecord==null){
                               return Center(
-                                child: Text("No one is Absent!",style: GoogleFonts.roboto(
+                                child: Text("No one is Present Today!",style: GoogleFonts.roboto(
                                     textStyle: TextStyle(
                                         fontSize: screenWidth/20,
                                         color: primary,
@@ -90,18 +91,18 @@ class _absentUsersState extends State<absentUsers> {
                                 ),),
                               );
                             }
-                            var absentData =
-                                dataSnapshot.data?.absentUsers?.toList() ?? [];
+                            var presentData =
+                                dataSnapshot.data?.presentUsers?.toList() ?? [];
                             return RefreshIndicator(
                               color: whiteColor,
                               backgroundColor: lightgreyColor,
                               onRefresh: Refresh,
                               child: ListView.builder(
-                                  itemCount: absentData.length,
+                                  itemCount: presentData.length,
                                   itemBuilder: (context, index) {
                                     return Container(
                                       margin: EdgeInsets.only(top: 5, bottom: 5),
-                                      height: MediaQuery.of(context).size.height / 8,
+                                      height: MediaQuery.of(context).size.height / 5.5,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(10),
@@ -119,7 +120,7 @@ class _absentUsersState extends State<absentUsers> {
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             CircleAvatar(
-                                                radius: screenWidth/14,
+                                                radius: screenWidth/12,
                                                 backgroundImage:
                                                 AssetImage('assets/images/usericon.png')
                                             ),
@@ -138,26 +139,26 @@ class _absentUsersState extends State<absentUsers> {
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Flexible(
+                                                Expanded(
                                                   child: Text(
-                                                    absentData[index].fullName??"",
+                                                    presentData[index].fullName??"",
                                                     style: GoogleFonts.roboto(
                                                       textStyle: TextStyle(
                                                         color: primary, // Use your primary color variable
                                                         fontWeight: FontWeight.w400,
-                                                        fontSize: MediaQuery.of(context).size.width / 18,
+                                                        fontSize: MediaQuery.of(context).size.width / 20,
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                                 Expanded(
-                                                  child: Column(
-                                                      crossAxisAlignment:CrossAxisAlignment.center,
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Flexible(
-                                                          child: Text(
-                                                            absentData[index].designation??"",
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Column(
+                                                        children: [
+                                                          Text(
+                                                            presentData[index].checkIn??"",
                                                             style: GoogleFonts.roboto(
                                                                 textStyle: TextStyle(
                                                                     color:
@@ -166,30 +167,80 @@ class _absentUsersState extends State<absentUsers> {
                                                                     fontSize: screenWidth / 26
                                                                 )),
                                                           ),
-                                                        ),
-                                                      ]
+                                                          Text("Check In",
+                                                            style: GoogleFonts.roboto(
+                                                                textStyle: TextStyle(
+                                                                    color:
+                                                                    Colors.black54,
+                                                                    fontWeight: FontWeight.w400,
+                                                                    fontSize: screenWidth / 30
+                                                                )),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(width: screenWidth/15,),
+                                                      Column(
+                                                        children: [
+                                                          Text(
+                                                            presentData[index].checkOut??"",
+                                                            style: GoogleFonts.roboto(
+                                                                textStyle: TextStyle(
+                                                                    color:
+                                                                    lightBlackColor,
+                                                                    fontWeight: FontWeight.w400,
+                                                                    fontSize: screenWidth / 26
+                                                                )),
+                                                          ),
+                                                          Text("Check Out",
+                                                            style: GoogleFonts.roboto(
+                                                                textStyle: TextStyle(
+                                                                    color:
+                                                                    Colors.black54,
+                                                                    fontWeight: FontWeight.w400,
+                                                                    fontSize: screenWidth / 30
+                                                                )),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                                 Expanded(
-                                                  child: Column(
-                                                      crossAxisAlignment:CrossAxisAlignment.center,
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Flexible(
-                                                          child: Text(
-                                                            absentData[index].jobType??"",
-                                                            style: GoogleFonts.roboto(
-                                                                textStyle: TextStyle(
-                                                                    color:
-                                                                    lightBlackColor,
-                                                                    fontWeight: FontWeight.w400,
-                                                                    fontSize: screenWidth / 26
-                                                                )),
-                                                          ),
-                                                        ),
-                                                      ]
-                                                  ),
-                                                ),
+                                                    child: Row(
+                                                  children: [
+                                                    Text("Duration: ",
+                                                      style: GoogleFonts.roboto(
+                                                          textStyle: TextStyle(
+                                                              color:
+                                                              Colors.black54,
+                                                              fontWeight: FontWeight.w400,
+                                                              fontSize: screenWidth / 34
+                                                          )),
+                                                    ),
+
+                                                    Text(
+                                                      "${presentData[index].duration!.hours??""} Hrs : ",
+                                                      style: GoogleFonts.roboto(
+                                                          textStyle: TextStyle(
+                                                              color:
+                                                              lightBlackColor,
+                                                              fontWeight: FontWeight.w400,
+                                                              fontSize: screenWidth / 28
+                                                          )),
+                                                    ),
+                                                    Text(
+                                                      "${presentData[index].duration!.minutes??""} Min",
+                                                      style: GoogleFonts.roboto(
+                                                          textStyle: TextStyle(
+                                                              color:
+                                                              lightBlackColor,
+                                                              fontWeight: FontWeight.w400,
+                                                              fontSize: screenWidth / 28
+                                                          )),
+                                                    ),
+
+                                                  ],
+                                                ))
                                               ],
                                             )
                                           ],
@@ -201,7 +252,7 @@ class _absentUsersState extends State<absentUsers> {
                           }
                           else{
                             return Center(
-                              child: Text("No one is Absent Today!",style: GoogleFonts.roboto(
+                              child: Text("No one is Present Yet!",style: GoogleFonts.roboto(
                                   textStyle: TextStyle(
                                       fontSize: screenWidth/20,
                                       color: primary,

@@ -49,16 +49,16 @@ class SimpleCustomCard extends StatelessWidget {
                 style: GoogleFonts.roboto(
                     textStyle: TextStyle(
                         color: headingColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: screenWidth/18
+                        fontWeight: FontWeight.w500,
+                        fontSize: screenWidth/24
                     )
                 ),),
           Text("${label}",
             style: GoogleFonts.roboto(
                 textStyle: TextStyle(
                     color:color,
-                    fontWeight: FontWeight.w500,
-                    fontSize: screenWidth/25
+                    fontWeight: FontWeight.w400,
+                    fontSize: screenWidth/28
                 )
             ),),
 

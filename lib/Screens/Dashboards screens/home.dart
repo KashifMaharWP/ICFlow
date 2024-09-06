@@ -48,7 +48,10 @@ class _HomePageState extends State<HomePage> {
 
     //Get Team Attendance from the Team Attendance Provider
     if(userRole!=3){
-      WidgetsBinding.instance.addPostFrameCallback((_){Provider.of<TeamAttendanceProvider>(context, listen: false).GetTeamAttendance(context);});
+      WidgetsBinding.instance.addPostFrameCallback((_){
+        Provider.of<TeamAttendanceProvider>(context, listen: false).fetchTeamAttendanceData(context);
+      });
+
     }
 
   }
