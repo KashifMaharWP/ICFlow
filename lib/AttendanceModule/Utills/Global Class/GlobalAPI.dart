@@ -10,6 +10,7 @@ class ApiDetail{
   static String ViewWorkingHrs="attendance/myWorkingHours/";
   static String absentUsers="attendance/getAllTodayAbsentUsers";
   static String presentUsers="attendance/getAllTodayPresentUsers";
+  static String todayAttendnace="attendance/getTodayAttendance";
 }
 
 

@@ -35,28 +35,32 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   String CurrentMonth = DateFormat("MMMM").format(DateTime.now());
   int monthWorkingHrs = 0;
-  bool load=false;
-
+  bool load = false;
 
   @override
   void initState() {
     super.initState();
     final atdProvider = Provider.of<AttendanceProvider>(context, listen: false);
     atdProvider.loadCheckInStatus();
-    atdProvider.fetchAttendanceData(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AttendanceProvider>(context, listen: false)
+          .fetchAttendanceData(context);
+    });
   }
-  void refresh(){
+
+  void refresh() {
     final atdProvider = Provider.of<AttendanceProvider>(context, listen: false);
     atdProvider.fetchAttendanceData;
-    }
+  }
 
-  showLoaderDialog(BuildContext context){
+  showLoaderDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
       content: Container(
         width: screenWidth / 2,
         height: screenHeight / 6,
         child: Center(
-          child: LoadingAnimationWidget.hexagonDots(color: primary, size: screenWidth / 5),
+          child: LoadingAnimationWidget.hexagonDots(
+              color: primary, size: screenWidth / 5),
         ),
       ),
     );
@@ -69,11 +73,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     );
   }
 
-
-
   Future confirmAttendance(String title, BuildContext context) async {
     // Capture the Provider value before the dialog dismisses
-    final attendanceProvider = Provider.of<AttendanceProvider>(context, listen: false);
+    final attendanceProvider =
+        Provider.of<AttendanceProvider>(context, listen: false);
     bool isCheckedIn = attendanceProvider.ischeckedIn;
 
     // Show the confirm dialog
@@ -131,14 +134,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       ],
                     ),
                     padding: EdgeInsets.symmetric(
-                        vertical: screenWidth / 80, horizontal: screenWidth / 10),
+                        vertical: screenWidth / 80,
+                        horizontal: screenWidth / 10),
                     child: customText("No", screenWidth / 22, blackColor),
                   ),
                 ),
                 SizedBox(width: screenWidth / 50),
                 InkWell(
                   onTap: () {
-                    Navigator.pop(context, true); // Indicate that the user confirmed
+                    Navigator.pop(
+                        context, true); // Indicate that the user confirmed
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -154,7 +159,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       ],
                     ),
                     padding: EdgeInsets.symmetric(
-                        vertical: screenWidth / 80, horizontal: screenWidth / 10),
+                        vertical: screenWidth / 80,
+                        horizontal: screenWidth / 10),
                     child: customText("Yes", screenWidth / 22, blackColor),
                   ),
                 ),
@@ -169,45 +175,41 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     if (shouldProceed == true) {
       // Show the loading dialog
       showLoaderDialog(context);
-        if (!isCheckedIn) {
-          await getCurrentLocationCheckInTime(context);
-          refresh();
-        } else {
-          await getCurrentLocationCheckOutTime(context);
-          refresh();
-        }
-        Navigator.pop(context);
-
+      if (!isCheckedIn) {
+        await getCurrentLocationCheckInTime(context);
+        refresh();
+      } else {
+        await getCurrentLocationCheckOutTime(context);
+        refresh();
+      }
+      Navigator.pop(context);
     }
   }
 
-
-
   @override
-    Widget build(BuildContext context) {
-    midNightTimer().MidNightTimerCheck();
+  Widget build(BuildContext context) {
+    //midNightTimer().MidNightTimerCheck();
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Attendance",
-            style: GoogleFonts.roboto(
-                textStyle: TextStyle(
-                    fontSize: screenWidth / 15,
-                    fontWeight: FontWeight.bold,
-                    color: primary)),
-          ),
+      appBar: AppBar(
+        title: Text(
+          "Attendance",
+          style: GoogleFonts.roboto(
+              textStyle: TextStyle(
+                  fontSize: screenWidth / 15,
+                  fontWeight: FontWeight.bold,
+                  color: primary)),
         ),
-        body: SingleChildScrollView(
-            padding: EdgeInsets.all(20),
-            child: bodyContainer()
-        ),
-      );
-    }
+      ),
+      body: SingleChildScrollView(
+          padding: EdgeInsets.all(20), child: bodyContainer()),
+    );
+  }
 
-    //page bodyContainer
-    Widget bodyContainer(){
-        return Column(
+  //page bodyContainer
+  Widget bodyContainer() {
+    return Column(
       children: [
+
         //top Body Container with Today status and view Attendance Button
         topBodyContainer(),
 
@@ -235,25 +237,24 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                     color: primary),
                               ),
                               children: [
-                                TextSpan(
-                                  text: DateFormat(' MMMM yyyy')
-                                      .format(DateTime.now()),
-                                  style: GoogleFonts.roboto(
-                                    textStyle: TextStyle(
-                                        fontSize: screenWidth / 18,
-                                        fontWeight: FontWeight.w500,
-                                        color: lightBlackColor),
-                                  ),
-                                )
-                              ]))),
+                            TextSpan(
+                              text: DateFormat(' MMMM yyyy')
+                                  .format(DateTime.now()),
+                              style: GoogleFonts.roboto(
+                                textStyle: TextStyle(
+                                    fontSize: screenWidth / 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: lightBlackColor),
+                              ),
+                            )
+                          ]))),
                   StreamBuilder(
                       stream: Stream.periodic(const Duration(seconds: 1)),
                       builder: (context, snapshot) {
                         return Container(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            DateFormat('hh:mm:ss:a')
-                                .format(DateTime.now()),
+                            DateFormat('hh:mm:ss:a').format(DateTime.now()),
                             style: GoogleFonts.roboto(
                                 textStyle: TextStyle(
                                     fontSize: screenWidth / 20,
@@ -275,12 +276,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         ),
 
         monthWorkHrStatus(),
-
       ],
-    ) ;
-}
+    );
+  }
 
-    Widget topBodyContainer(){
+  Widget topBodyContainer() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -290,18 +290,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             "Today's Status",
             style: GoogleFonts.roboto(
                 textStyle: TextStyle(
-                  color: lightBlackColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: screenWidth / 15,
-                )),
+              color: lightBlackColor,
+              fontWeight: FontWeight.bold,
+              fontSize: screenWidth / 15,
+            )),
           ),
         ),
         InkWell(
           onTap: () {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AtdHistoryScreen()));
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => AtdHistoryScreen()));
           },
           child: Row(
             children: [
@@ -324,147 +322,139 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         ),
       ],
     );
-    }
+  }
 
-    Widget todayCheckInOutStatus(){
-    return Consumer<AttendanceProvider>(
-        builder: (context, atdProvider, child) {
-          return Container(
-            margin: EdgeInsets.only(top: 10, bottom: 30),
-            height: 150,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 12,
-                      offset: Offset(2, 6))
-                ]),
-            child: Row(
+  Widget todayCheckInOutStatus() {
+    return Consumer<AttendanceProvider>(builder: (context, atdProvider, child) {
+      return Container(
+        margin: EdgeInsets.only(top: 10, bottom: 30),
+        height: 150,
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black26, blurRadius: 12, offset: Offset(2, 6))
+            ]),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+                child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Check In",
-                          style: GoogleFonts.roboto(
-                              textStyle: TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: screenWidth / 25)),
-                        ),
-                        Text(
-                          CheckInClass.checkInTime,
-                          style: GoogleFonts.roboto(
-                              textStyle: TextStyle(
-                                  color: lightBlackColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 15)),
-                        ),
-                      ],
-                    )),
-                Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Check Out",
-                          style: GoogleFonts.roboto(
-                              textStyle: TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: screenWidth / 25)),
-                        ),
-                        Text(
-                          CheckInClass.checkOutTime??'--|--',
-                          style: GoogleFonts.roboto(
-                              textStyle: TextStyle(
-                                  color: lightBlackColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 15)),
-                        ),
-                      ],
-                    )),
+                Text(
+                  "Check In",
+                  style: GoogleFonts.roboto(
+                      textStyle: TextStyle(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.bold,
+                          fontSize: screenWidth / 25)),
+                ),
+                Consumer<AttendanceProvider>(
+                  builder: (context, provider, child) {
+                    return Text(
+                     provider.checkInTime ?? "--|--",
+                      style: GoogleFonts.roboto(
+                          textStyle: TextStyle(
+                              color: lightBlackColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: screenWidth / 20)),
+                    );
+                  })
               ],
-            ),
-          );
-        });
-    }
-    Widget attendanceButton(){
-      final atdProvider = Provider.of<AttendanceProvider>(context);
+            )),
+            Expanded(
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Check Out",
+                  style: GoogleFonts.roboto(
+                      textStyle: TextStyle(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.bold,
+                          fontSize: screenWidth / 25)),
+                ),
+                Consumer<AttendanceProvider>(
+                    builder: (context, provider, child) {
+                  return Text(
+                    provider.checkOutTime ?? '--|--',
+                    style: GoogleFonts.roboto(
+                        textStyle: TextStyle(
+                            color: lightBlackColor,
+                            fontWeight: FontWeight.w400,
+                            fontSize: screenWidth / 20)),
+                  );
+                })
+              ],
+            )),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget attendanceButton() {
+    final atdProvider = Provider.of<AttendanceProvider>(context);
     return Container(
         margin: EdgeInsets.zero,
-        width: screenWidth/2.3,
-        height: screenHeight/4,
+        width: screenWidth / 2.3,
+        height: screenHeight / 4,
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
                 color: CupertinoColors.systemGrey2,
                 offset: Offset(2, 2),
                 blurRadius: 4,
-                spreadRadius: 2
-            )
+                spreadRadius: 2)
           ],
           shape: BoxShape.circle,
-          gradient: LinearGradient(colors:
-          atdProvider.isDisabled==false
-              ?atdProvider.ischeckedIn == true
-              ? [
-            Colors.cyan,
-            Colors.blue
-          ]
-              :[
-            Colors.pink,
-            Colors.redAccent
-          ]:[
-            Colors.black12,
-            Colors.white38
-          ]
-          ),
+          gradient: LinearGradient(
+              colors: atdProvider.isDisabled == false
+                  ? atdProvider.ischeckedIn == true
+                      ? [Colors.cyan, Colors.blue]
+                      : [Colors.pink, Colors.redAccent]
+                  : [Colors.black12, Colors.white38]),
         ),
-        child:  InkWell(
-          onTap:atdProvider.isDisabled == false? (){
-            if(atdProvider.ischeckedIn==true)
-            {
-              confirmAttendance("Check Out",context);
-            }
-            else{
-              confirmAttendance("Check In",context);
-            }
-
-          }
-              :(){},
+        child: InkWell(
+          onTap: atdProvider.isDisabled == false
+              ? () {
+                  if (atdProvider.ischeckedIn == true) {
+                    confirmAttendance("Check Out", context);
+                  } else {
+                    confirmAttendance("Check In", context);
+                  }
+                }
+              : () {},
           child: CircleAvatar(
               backgroundColor: Colors.transparent,
-              child:atdProvider.ischeckedIn == true
-                  ? customText("Check Out", screenWidth/22, whiteColor)
-                  : customText("Check In", screenWidth/22, whiteColor)
-          ),
-        )
-    );
-    }
-    Widget customText(String text, double fontSize, Color fontColor){
-    return Text("${text}",style: GoogleFonts.roboto(
-      textStyle: (
-      TextStyle(
+              child: atdProvider.ischeckedIn == true
+                  ? customText("Check Out", screenWidth / 22, whiteColor)
+                  : customText("Check In", screenWidth / 22, whiteColor)),
+        ));
+  }
+
+  Widget customText(String text, double fontSize, Color fontColor) {
+    return Text(
+      "${text}",
+      style: GoogleFonts.roboto(
+          textStyle: (TextStyle(
         fontSize: fontSize,
         color: fontColor,
         fontWeight: FontWeight.w400,
-      )
-      )
-    ),);
-    }
+      ))),
+    );
+  }
 
-    Widget monthWorkHrStatus(){
-      int workingHrs = Provider.of<AttendanceProvider>(context).countMonthWorkingHrs(context);
-      final atdProvider = Provider.of<AttendanceProvider>(context);
-      return Column(
+  Widget monthWorkHrStatus() {
+    int workingHrs =
+        Provider.of<AttendanceProvider>(context).countMonthWorkingHrs(context);
+    final atdProvider = Provider.of<AttendanceProvider>(context);
+    return Column(
       children: [
         Container(
           alignment: Alignment.centerLeft,
@@ -472,10 +462,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             "${DateFormat(' MMMM').format(DateTime.now())} Status",
             style: GoogleFonts.roboto(
                 textStyle: TextStyle(
-                  color: blackColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: screenWidth / 15,
-                )),
+              color: blackColor,
+              fontWeight: FontWeight.bold,
+              fontSize: screenWidth / 15,
+            )),
           ),
         ),
         SizedBox(
@@ -493,25 +483,21 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               screenWidth: screenWidth,
               screenHeight: screenHeight,
             ),
-
-            Consumer<AttendanceProvider>(
-                builder: (context, provider, child) {
-                  return SimpleCustomCard(
-                    label: "Remaining",
-                    progressValue: "${atdProvider.remWorkingHrs} Hrs : ${atdProvider.remWorkingMin} Min",
-                    color: blackColor,
-                    headingColor: primary,
-                    backgroundColor: whiteColor,
-                    screenWidth: screenWidth,
-                    screenHeight: screenHeight,
-                  );
-
-                })
+            Consumer<AttendanceProvider>(builder: (context, provider, child) {
+              return SimpleCustomCard(
+                label: "Remaining",
+                progressValue:
+                    "${atdProvider.remWorkingHrs} Hrs : ${atdProvider.remWorkingMin} Min",
+                color: blackColor,
+                headingColor: primary,
+                backgroundColor: whiteColor,
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
+              );
+            })
           ],
         ),
       ],
     );
-    }
-
   }
-
+}

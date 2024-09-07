@@ -10,7 +10,7 @@ class midNightTimer{
    if(CheckInClass.checkInDate!=DateFormat("dd MM yyyy").format(DateTime.now())){
      CheckInClass.checkInTime='--|--';
      CheckInClass.checkOutTime='--|--';
-
    }
+
  }
 }
