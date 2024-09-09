@@ -51,7 +51,11 @@ class _HomePageState extends State<HomePage> {
       WidgetsBinding.instance.addPostFrameCallback((_){
         Provider.of<TeamAttendanceProvider>(context, listen: false).fetchTeamAttendanceData(context);
       });
-
+    }
+    else{
+      WidgetsBinding.instance.addPostFrameCallback((_){
+        Provider.of<AttendanceProvider>(context,listen: false).fetchAttendanceData(context);
+      });
     }
 
   }

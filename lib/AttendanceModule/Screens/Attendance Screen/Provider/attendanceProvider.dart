@@ -1,30 +1,26 @@
 import 'dart:convert';
 import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
 import 'package:taskflow_application/AttendanceModule/Screens/Attendance%20Screen/Functions/customAlertBox.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/Attendance%20Screen/Model/todayAttendanceModel.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/LeaveForm%20Screen/LeaveFormScreen.dart';
 import '../../../Utills/Global Class/GlobalAPI.dart';
 import 'package:http/http.dart' as http;
-
-import '../../../Utills/Global Class/userDataList.dart';
 import '../../../Utills/Global Functions/SnackBar.dart';
-import '../Class/CheckInClass.dart';
-import '../Functions/AttendanceSharedPrefrences.dart';
 
 class AttendanceProvider extends ChangeNotifier {
   bool _ischeckedIn = false;
   bool _isLoading = false;
   bool isDisabled = false;
-  bool isCheckout = false;
+  bool _isCheckLoading = false;
 
   bool get isLoading => _isLoading;
-
+  bool get isCheckLoading=>_isCheckLoading;
   bool get ischeckedIn => _ischeckedIn;
+
   int totalWorkingMin = 0;
   int monthWorkingHrs = 0;
   int workingMin = 0;
@@ -38,7 +34,6 @@ class AttendanceProvider extends ChangeNotifier {
   Future<void> setischeckedIn(bool value) async {
     _ischeckedIn = value;
     notifyListeners();
-    await AttendanceSharedPrefrences.setCheckInStatus(value);
   }
 
   void setIsdisabled(bool value) {
@@ -46,10 +41,11 @@ class AttendanceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadCheckInStatus() async {
-    _ischeckedIn = await AttendanceSharedPrefrences.getCheckInStatus();
+  void setisCheckLoading(bool value) {
+     _isCheckLoading=value;
     notifyListeners();
   }
+
 
   setisLoading(bool value) {
     _isLoading = value;
@@ -77,7 +73,6 @@ class AttendanceProvider extends ChangeNotifier {
 
   Future<void> AddCheckIn(double latitude, longitude,
       BuildContext context) async {
-    setIsdisabled(false);
     String url = "${ApiDetail.BaseAPI}${ApiDetail.CheckIn}";
     final body = {
       "date": DateFormat('EEE MMM dd yyyy').format(DateTime.now()),
@@ -110,14 +105,12 @@ class AttendanceProvider extends ChangeNotifier {
         if (json.isNotEmpty) {
           //CheckInClass.checkInTime=DateTime.now().toString();
           showSuccessSnackbar("Check In Successfully", context);
-          setischeckedIn(true);
           setisLoading(false);
-          //Navigator.pop(context);
+          fetchAttendanceData(context);
           showStatusLoader(context, "assets/lottie/successfullyDone.json");
         } else {
           //print("{}");
           showErrorSnackbar("${json['message']}", context);
-          setischeckedIn(false);
           setisLoading(false);
           //Navigator.pop(context);
           showStatusLoader(context, "assets/lottie/unsuccessful.json");
@@ -128,14 +121,12 @@ class AttendanceProvider extends ChangeNotifier {
       }
       else {
         showErrorSnackbar("${json['message'].toString()}", context);
-        setischeckedIn(false);
         setisLoading(false);
         // Navigator.pop(context);
         showStatusLoader(context, "assets/lottie/unsuccessful.json");
       }
     } catch (e) {
       print("Exception: $e");
-      setischeckedIn(false);
       setisLoading(false);
       //Navigator.pop(context);
       showStatusLoader(context, "assets/lottie/unsuccessful.json");
@@ -146,7 +137,6 @@ class AttendanceProvider extends ChangeNotifier {
 
   Future<void> AddCheckOut(double latitude, longitude,
       BuildContext context) async {
-    setIsdisabled(false);
     String url = "${ApiDetail.BaseAPI}${ApiDetail.CheckOut}";
     final body = {
       "date": DateFormat('EEE MMM dd yyyy').format(DateTime.now()),
@@ -173,11 +163,8 @@ class AttendanceProvider extends ChangeNotifier {
       print("Here is Status Code: " + response.statusCode.toString());
       if (response.statusCode == 200) {
         showSuccessSnackbar("Check Out Successfully", context);
-        await setischeckedIn(false);
         fetchAttendanceData(context);
         setisLoading(false);
-        setIsdisabled(true);
-        isCheckout = true;
         showStatusLoader(context, "assets/lottie/successfullyDone.json");
       }
       else if (response.statusCode == 408) {
@@ -185,16 +172,12 @@ class AttendanceProvider extends ChangeNotifier {
       }
       else {
         showErrorSnackbar("${json['message'].toString()}", context);
-        await setischeckedIn(true);
         setisLoading(false);
-        setIsdisabled(false);
         showStatusLoader(context, "assets/lottie/unsuccessful.json");
       }
     } catch (e) {
       showErrorSnackbar("There is an Error Occured : ${e}", context);
-      await setischeckedIn(true);
       setisLoading(false);
-      setIsdisabled(false);
       showStatusLoader(context, "assets/lottie/unsuccessful.json");
     }
     await Future.delayed(Duration(seconds: 3));
@@ -268,6 +251,8 @@ class AttendanceProvider extends ChangeNotifier {
   }
 
   Future<void> getTodayAttendance(BuildContext context) async {
+    setisCheckLoading(true);
+    String day="Mon Sep 09 2024";
     String currentDate=DateFormat("EEE MMM dd yyyy").format(DateTime.now());
     //String Date="Sat Sep 07 2024";
     String url = "${ApiDetail.BaseAPI}${ApiDetail.todayAttendnace}/${currentDate}";
@@ -294,9 +279,14 @@ class AttendanceProvider extends ChangeNotifier {
           // Safely access the checkIn and checkOut times
           if (firstAttendance['checkIn'] != null) {
             checkInTime = firstAttendance['checkIn']['time'].toString();
+            setIsdisabled(false);
+            setischeckedIn(true);
             print("CheckIN: $checkInTime");
-          } else {
+          }
+          else {
             checkInTime="--|--";
+            setIsdisabled(false);
+            setischeckedIn(false);
           }
 
           if (firstAttendance['checkOut'] != null) {
@@ -304,13 +294,19 @@ class AttendanceProvider extends ChangeNotifier {
             setIsdisabled(true);
           } else {
             checkOutTime="--|--";
+            setIsdisabled(false);
           }
-        } else {
+        }
+        else {
+          setIsdisabled(false);
+          //setischeckedIn(true);
           checkInTime="--|--";
           checkOutTime="--|--";
         }
 
       } else {
+        //print(response.body);
+        setischeckedIn(false);
         setIsdisabled(false);
         checkInTime="--|--";
         checkOutTime="--|--";

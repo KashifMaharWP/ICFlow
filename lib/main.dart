@@ -7,12 +7,10 @@ import 'package:taskflow_application/Api/registration.dart';
 import 'package:taskflow_application/Classes/Device_Info.dart';
 import 'package:taskflow_application/Classes/manageUser_class.dart';
 import 'package:taskflow_application/Routes/myroutes.dart';
-import 'package:taskflow_application/Screens/Dashboards%20screens/home.dart';
 import 'package:taskflow_application/Screens/Login%20screens/login_page.dart';
 
 import 'AttendanceModule/Provider/Authentication Provider/authProvider.dart';
 import 'AttendanceModule/Screens/Attendance History/Provider/HistoryProvider.dart';
-import 'AttendanceModule/Screens/Attendance Screen/Functions/midNightTimer.dart';
 import 'AttendanceModule/Screens/Attendance Screen/Provider/attendanceProvider.dart';
 import 'AttendanceModule/Screens/LeaveForm Screen/Provider/LeaveFormProvider.dart';
 import 'AttendanceModule/Screens/Team Attendance Screen/Provider/TeamAttendanceProvider.dart';

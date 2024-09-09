@@ -21,7 +21,6 @@ import '../../../Utills/Global Class/ScreenSize.dart';
 import '../Class/CheckInClass.dart';
 import '../Functions/Location_Tracker.dart';
 import '../Provider/attendanceProvider.dart';
-import '../Functions/midNightTimer.dart';
 import '../Widgets/SimpleCard.dart';
 
 class AttendanceScreen extends StatefulWidget {
@@ -40,17 +39,22 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   void initState() {
     super.initState();
-    final atdProvider = Provider.of<AttendanceProvider>(context, listen: false);
-    atdProvider.loadCheckInStatus();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<AttendanceProvider>(context, listen: false)
           .fetchAttendanceData(context);
+      //refresh();
     });
   }
-
-  void refresh() {
+  void _fetchData(){
     final atdProvider = Provider.of<AttendanceProvider>(context, listen: false);
     atdProvider.fetchAttendanceData;
+  }
+
+  Future<void> refresh() async{
+    setState(() {
+      print("Refresh Button Clicked");
+      _fetchData();
+    });
   }
 
   showLoaderDialog(BuildContext context) {
@@ -209,11 +213,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   Widget bodyContainer() {
     return Column(
       children: [
-
         //top Body Container with Today status and view Attendance Button
         topBodyContainer(),
 
-        //Today Check In and Check Out Status
         todayCheckInOutStatus(),
 
         Row(
@@ -237,17 +239,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                     color: primary),
                               ),
                               children: [
-                            TextSpan(
-                              text: DateFormat(' MMMM yyyy')
-                                  .format(DateTime.now()),
-                              style: GoogleFonts.roboto(
-                                textStyle: TextStyle(
-                                    fontSize: screenWidth / 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: lightBlackColor),
-                              ),
-                            )
-                          ]))),
+                                TextSpan(
+                                  text: DateFormat(' MMMM yyyy')
+                                      .format(DateTime.now()),
+                                  style: GoogleFonts.roboto(
+                                    textStyle: TextStyle(
+                                        fontSize: screenWidth / 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: lightBlackColor),
+                                  ),
+                                )
+                              ]))),
                   StreamBuilder(
                       stream: Stream.periodic(const Duration(seconds: 1)),
                       builder: (context, snapshot) {
@@ -275,7 +277,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           height: screenHeight / 50,
         ),
 
-        monthWorkHrStatus(),
+        monthWorkHrStatus()
       ],
     );
   }
@@ -325,64 +327,37 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   Widget todayCheckInOutStatus() {
-    return Consumer<AttendanceProvider>(builder: (context, atdProvider, child) {
-      return Container(
-        margin: EdgeInsets.only(top: 10, bottom: 30),
-        height: 150,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black26, blurRadius: 12, offset: Offset(2, 6))
-            ]),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Check In",
-                  style: GoogleFonts.roboto(
-                      textStyle: TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.bold,
-                          fontSize: screenWidth / 25)),
-                ),
-                Consumer<AttendanceProvider>(
-                  builder: (context, provider, child) {
-                    return Text(
-                     provider.checkInTime ?? "--|--",
-                      style: GoogleFonts.roboto(
-                          textStyle: TextStyle(
-                              color: lightBlackColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: screenWidth / 20)),
-                    );
-                  })
-              ],
-            )),
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Check Out",
-                  style: GoogleFonts.roboto(
-                      textStyle: TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.bold,
-                          fontSize: screenWidth / 25)),
-                ),
-                Consumer<AttendanceProvider>(
-                    builder: (context, provider, child) {
+    return Container(
+      margin: EdgeInsets.only(top: 10, bottom: 30),
+      height: 150,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black26, blurRadius: 12, offset: Offset(2, 6))
+          ]),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Check In",
+                style: GoogleFonts.roboto(
+                    textStyle: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: screenWidth / 25)),
+              ),
+              Consumer<AttendanceProvider>(
+                builder: (context, provider, child) {
                   return Text(
-                    provider.checkOutTime ?? '--|--',
+                    provider.checkInTime??'--|--',
                     style: GoogleFonts.roboto(
                         textStyle: TextStyle(
                             color: lightBlackColor,
@@ -390,12 +365,37 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             fontSize: screenWidth / 20)),
                   );
                 })
-              ],
-            )),
-          ],
-        ),
-      );
-    });
+            ],
+          )),
+          Expanded(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Check Out",
+                style: GoogleFonts.roboto(
+                    textStyle: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: screenWidth / 25)),
+              ),
+              Consumer<AttendanceProvider>(
+                  builder: (context, provider, child) {
+                return Text(
+                  provider.checkOutTime ?? '--|--',
+                  style: GoogleFonts.roboto(
+                      textStyle: TextStyle(
+                          color: lightBlackColor,
+                          fontWeight: FontWeight.w400,
+                          fontSize: screenWidth / 20)),
+                );
+              })
+            ],
+          )),
+        ],
+      ),
+    );
   }
 
   Widget attendanceButton() {
