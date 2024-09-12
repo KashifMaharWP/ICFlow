@@ -42,7 +42,7 @@ class AttendanceProvider extends ChangeNotifier {
   }
 
   void setisCheckLoading(bool value) {
-     _isCheckLoading=value;
+    _isCheckLoading=value;
     notifyListeners();
   }
 
@@ -264,7 +264,7 @@ class AttendanceProvider extends ChangeNotifier {
           "Authorization": "Bearer ${Provider.of<UserDetail>(context, listen: false).token}"
         },
       );
-        print(currentDate);
+      print(currentDate);
       if (response.statusCode == 200) {
         // Decode the response body to a Map
         var data = jsonDecode(response.body);

@@ -9,7 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:slide_to_act/slide_to_act.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
 import 'package:taskflow_application/AttendanceModule/Screens/Attendance%20History/Attendance%20History%20Shimmer/AttendanceHistoryShimmerScreen.dart';
@@ -194,6 +193,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   Widget build(BuildContext context) {
     //midNightTimer().MidNightTimerCheck();
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           "Attendance",

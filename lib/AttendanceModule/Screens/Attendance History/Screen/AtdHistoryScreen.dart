@@ -104,6 +104,7 @@ class _AtdHistoryScreenState extends State<AtdHistoryScreen> {
     int currentYear=_currentMonth.year;
     final AtdHistProvider = Provider.of<HistoryProvider>(context);
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Container(
         padding: EdgeInsets.all(screenWidth/25),
           child: Column(

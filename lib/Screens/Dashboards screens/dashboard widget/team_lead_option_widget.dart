@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taskflow_application/AttendanceModule/Screens/Attendance%20Screen/Screen/Attedance_screen.dart';
 import 'package:taskflow_application/AttendanceModule/Screens/Leave%20Management/Screen/leadLeaveManagement.dart';
+import 'package:taskflow_application/AttendanceModule/Screens/Leave%20Management/Screen/userLeaveManagement.dart';
 import 'package:taskflow_application/Screens/Manage%20User%20Screens/add_user_page.dart';
 import 'package:taskflow_application/Screens/Manage%20User%20Screens/manage_user_page.dart';
 import 'package:taskflow_application/Screens/Project%20screens/add_project_page.dart';
@@ -55,7 +56,7 @@ class _TeamLeadDashboardButtons extends State<TeamLeadDashboardButtons> {
               btnName: "Manage Leave",
               ontap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => Samplescreen()));
+                    MaterialPageRoute(builder: (_) => teamLeadLeaveManagement()));
               }),
         ],
       ),

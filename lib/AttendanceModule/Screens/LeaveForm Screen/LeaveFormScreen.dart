@@ -1,12 +1,19 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:taskflow_application/AttendanceModule/Screens/Leave%20Management/Widget/WrapTextWidget_AB.dart';
+import 'package:taskflow_application/AttendanceModule/Widgets/Global%20Widgets/customText.dart';
 import '../../Utills/Global Class/ColorHelper.dart';
 import '../../Utills/Global Class/ScreenSize.dart';
 import '../../Utills/Global Functions/SnackBar.dart';
+import '../../Widgets/Global Widgets/customNoBoldText.dart';
 import 'Class/TeamLeads.dart';
 import 'Provider/LeaveFormProvider.dart';
 
@@ -25,6 +32,8 @@ final Remark = TextEditingController();
 final _LeaveformKey=GlobalKey<FormState>();
 TeamLeads? selectedTeamLead;
 List<TeamLeads> teamLeads = [];
+String _fileText = "";
+String _fileName="";
 
 
 @override
@@ -53,11 +62,13 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
     });
   }
 
-  void ResetAll(){
+  Future<void> ResetAll() async{
     reset();
     setState(() {
       Remark.clear();
       selectedTeamLead=null;
+      _fileText="";
+      _fileName='';
     });
   }
   void initState() {
@@ -73,6 +84,33 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
     });
   }
 
+  void _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      // allowedExtensions: ['jpg', 'pdf', 'doc'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      /// Load result and file details
+      print("Result ${result.files}");
+      PlatformFile file = result.files.first;
+      print(file.name);
+      print(file.bytes);
+      print(file.size);
+      print(file.extension);
+      print(file.path);
+      //_fileName=file.name;
+
+      /// normal file
+      File _file = File(result.files.single.path!);
+      setState(() {
+        _fileText = _file.path;
+        _fileName=file.name;
+      });
+    } else {
+      /// User canceled the picker
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -80,10 +118,15 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
    //print("${teamLeads[0].fullName}");
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: primary,
-          iconTheme: IconThemeData(color: whiteColor),
+          elevation: 1,
+          backgroundColor: Colors.redAccent.shade700,
+          foregroundColor: Colors.white,
+          centerTitle: true,
+          shadowColor: Colors.black,
+          title: const Text("Manage Leave"),
         ),
       body: Material(
+        color: Colors.white,
         child: SingleChildScrollView(
           physics: ScrollPhysics(),
           child: GestureDetector(
@@ -92,9 +135,8 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
             },
             child: Column(
               children: [
-                calendarContainer(),
+                sfDatePicker(),
                 formField()
-
               ],
             ),
           ),
@@ -105,181 +147,125 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
 
   Widget calendarContainer(){
     return Container(
-      height: screenHeight/2.3,
+      height: screenHeight/3,
       decoration: BoxDecoration(
-        color: primary,
+        color: whiteColor,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          dateSelectionBar(),
-
-          SizedBox(
-            width: 5,
-          ),
-
           sfDatePicker()
         ],
       ),
     );
   }
 
-  //Date Selection Side Bar Widget
-  Widget dateSelectionBar(){
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        InkWell(
-          onTap: (){
-            reset();
-          },
-          child: Container(
-            margin: EdgeInsets.only(top: screenHeight/30),
-            child: Text(initialDate==null?"":'Clear',style: GoogleFonts.roboto(
-                color: Colors.white,
-                textStyle: TextStyle(
-                  fontSize: screenWidth/20,
-                  fontWeight: FontWeight.w400,
-
-                )
-            ),),
-          ),
-        ),
-        SizedBox(
-          height: screenHeight/40,
-        ),
-        initialDate!=null?Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: screenWidth/15,
-              backgroundColor: Colors.white,
-              child: Center(
-                child: Text(initialDate!=null ? DateFormat("dd").format(initialDate!):"",style: GoogleFonts.roboto(
-                    textStyle: TextStyle(
-                        fontSize: screenWidth/15,
-                        color: primary,
-                        fontWeight: FontWeight.bold
-
-                    )
-                ),),
-              ),
-            ),
-            SizedBox(
-              height: screenHeight/60,
-            ),
-            Center(
-              child: Icon(
-                FontAwesomeIcons.arrowDownLong,
-                color: Colors.white,
-                size: screenHeight/25,
-              ),
-            ),
-
-            SizedBox(
-              height: screenHeight/60,
-            ),
-            lastDate!=null?CircleAvatar(
-              radius: screenWidth/15,
-              backgroundColor: Colors.white,
-              child: Center(
-                child: Text("${DateFormat("dd").format(lastDate!)}",style: GoogleFonts.roboto(
-                    textStyle: TextStyle(
-                        fontSize: screenWidth/15,
-                        color: primary,
-                        fontWeight: FontWeight.bold
-
-                    )
-                ),),
-              ),
-            ):Container(),
-
-            SizedBox(
-              height: screenHeight/50,
-            ),
-
-            Text("${countdays} Days",style: GoogleFonts.roboto(
-                textStyle: TextStyle(
-                    color: Colors.white,
-                    fontSize: screenWidth/20,
-                    fontWeight: FontWeight.bold
-                )
-            ),)
-          ],
-        ):Container(),
-      ],
-    );
-  }
 
   //Calender to Pick Date Range Widget
   Widget sfDatePicker(){
-    return SizedBox(
-      height: screenHeight/2.5, // Adjust the height as needed
-      width: screenWidth*0.75, // Adjust the width as needed
-      child: SfDateRangePicker(
-        backgroundColor: primary,
-        startRangeSelectionColor: Colors.white,
-        endRangeSelectionColor: Colors.white,
-        rangeSelectionColor: Colors.black26,
-        todayHighlightColor: Colors.white,
-        selectionTextStyle: GoogleFonts.roboto(
-            fontSize: screenWidth/20,
-            color: Colors.black,
-            fontWeight: FontWeight.bold
+    return Container(
+      height: screenHeight/2.6, // Adjust the height as needed
+      width: screenWidth,
+      padding: EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: whiteColor,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(screenWidth/10),
+          bottomRight: Radius.circular(screenWidth/10)
         ),
-        rangeTextStyle: GoogleFonts.roboto(
-            fontSize: screenWidth/24,
-            color: Colors.white
-        ),
-        monthCellStyle: DateRangePickerMonthCellStyle(
-          textStyle: GoogleFonts.roboto(
-            fontSize: screenWidth/22,
-            fontWeight: FontWeight.w400,
-            color: Colors.white,
-          ),
-          todayTextStyle: GoogleFonts.roboto(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: screenWidth/20
-
-          ),
-          weekendTextStyle: GoogleFonts.roboto(
-              color: Colors.amber,
-              fontWeight: FontWeight.w500,
-              fontSize: screenWidth/24
-          ),
-          disabledDatesTextStyle: GoogleFonts.roboto(
-              color: Colors.grey,
-              fontWeight: FontWeight.w500,
-              fontSize: screenWidth/24// Disabled dates text color
-          ),
-
-        ),
-        headerStyle: DateRangePickerHeaderStyle(
-            backgroundColor: primary,
-            textStyle: GoogleFonts.roboto(
-                fontSize: screenWidth/15,
-                color: Colors.white
-            )
-        ),
-
-
-        monthViewSettings: DateRangePickerMonthViewSettings(
-            viewHeaderStyle: DateRangePickerViewHeaderStyle(
+        boxShadow: [
+          BoxShadow(
+            color: CupertinoColors.systemGrey4,
+            offset: Offset(2, 2),
+            blurRadius: 10
+          )
+        ]
+      ),// Adjust the width as needed
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.zero,
+            height:initialDate!=null?screenHeight/3:screenHeight/2.7 , // Adjust the height as needed
+            width: screenWidth,
+            child: SfDateRangePicker(
+              backgroundColor: Colors.transparent,
+              startRangeSelectionColor: Colors.redAccent.shade200,
+              endRangeSelectionColor: Colors.redAccent.shade200,
+              rangeSelectionColor: Colors.redAccent.shade100,
+              todayHighlightColor: blackColor,
+              selectionTextStyle: GoogleFonts.roboto(
+                  fontSize: screenWidth/20,
+                  color: whiteColor,
+                  fontWeight: FontWeight.bold
+              ),
+              rangeTextStyle: GoogleFonts.roboto(
+                  fontSize: screenWidth/24,
+                  color: blackColor
+              ),
+              monthCellStyle: DateRangePickerMonthCellStyle(
                 textStyle: GoogleFonts.roboto(
-                  fontSize: screenWidth/25,
-                  color: Colors.white,
-                )
-            )
-        ),
-        minDate: DateTime.now(),
-        view: DateRangePickerView.month,
-        selectionMode: DateRangePickerSelectionMode.range,
-        onSelectionChanged: _onSelectionChanged,
-        controller: _dateRangePickerController,
+                  fontSize: screenWidth/22,
+                  fontWeight: FontWeight.w400,
+                  color: blackColor,
+                ),
+                todayTextStyle: GoogleFonts.roboto(
+                    color: blackColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: screenWidth/20
+
+                ),
+                weekendTextStyle: GoogleFonts.roboto(
+                    color: Colors.amber,
+                    fontWeight: FontWeight.w500,
+                    fontSize: screenWidth/24
+                ),
+                disabledDatesTextStyle: GoogleFonts.roboto(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w500,
+                    fontSize: screenWidth/24// Disabled dates text color
+                ),
+
+              ),
+              headerStyle: DateRangePickerHeaderStyle(
+                  backgroundColor: whiteColor,
+                  textStyle: GoogleFonts.roboto(
+                      fontSize: screenWidth/15,
+                      color: blackColor
+                  )
+              ),
+
+
+              monthViewSettings: DateRangePickerMonthViewSettings(
+                  viewHeaderStyle: DateRangePickerViewHeaderStyle(
+                      textStyle: GoogleFonts.roboto(
+                        fontSize: screenWidth/25,
+                        color: blackColor,
+                      )
+                  )
+              ),
+              minDate: DateTime.now(),
+              view: DateRangePickerView.month,
+              selectionMode: DateRangePickerSelectionMode.range,
+              onSelectionChanged: _onSelectionChanged,
+              controller: _dateRangePickerController,
+            ),
+          ),
+          initialDate!=null?InkWell(
+            onTap: (){
+              ResetAll();
+            },
+            child: customNoBoldText(
+            text: "Clear",
+            fontSize: screenWidth/22,
+            fontColor: blackColor
+                    ),
+          ):Container(
+            height: 0,
+              margin: EdgeInsets.zero,
+              padding: EdgeInsets.zero,
+          )
+        ],
       ),
     );
   }
@@ -355,6 +341,20 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
             SizedBox(
               height: screenHeight/40,
             ),
+            Container(
+              width: screenWidth,
+              padding: EdgeInsets.all(screenWidth/25),
+              decoration: BoxDecoration(
+                color: whiteColor,
+                border: Border.all(color: Colors.black54,width: 1,),
+                borderRadius: BorderRadius.circular(2)
+              ),
+              child: customText(text: _fileText!=null?"${_fileName}":"File Path", fontSize: screenWidth/26, fontColor: lightBlackColor),
+            ),
+            ElevatedButton(onPressed: (){
+              _pickFile();
+            }, child: Text("Pick File")),
+
 
             ElevatedButton(
                 onPressed: (){

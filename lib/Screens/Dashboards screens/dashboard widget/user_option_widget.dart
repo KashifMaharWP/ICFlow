@@ -44,7 +44,7 @@ class _UserDashboardButtons extends State<UserDashboardButtons> {
               btnName: "Manage Leave",
               ontap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => Samplescreen()));
+                    MaterialPageRoute(builder: (_) => userLeaveManagement()));
               }),
           CustomDashboardButton(
               colors: Colors.green,
