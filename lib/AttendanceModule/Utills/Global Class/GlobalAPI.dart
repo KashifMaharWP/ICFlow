@@ -11,6 +11,8 @@ class ApiDetail{
   static String absentUsers="attendance/getAllTodayAbsentUsers";
   static String presentUsers="attendance/getAllTodayPresentUsers";
   static String todayAttendnace="attendance/getTodayAttendance";
+  static String uploadProfile="user/updatePicture";
+  static String applyLeave="leave/apply";
 }
 
 

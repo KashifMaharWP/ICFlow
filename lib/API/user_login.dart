@@ -30,6 +30,7 @@ class UserLogin {
         //here we are calling the UserDetail model to store the details of the user
         Provider.of<UserDetail>(context, listen: false).setUserDetail(userJson);
         print("User Deatils Check: ${userJson}");
+        //print("User Picture ${userJson['picture']}");
 
         //printing for testing purpose.
         print(

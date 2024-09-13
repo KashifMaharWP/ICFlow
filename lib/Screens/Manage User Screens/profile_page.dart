@@ -124,10 +124,9 @@ class _ProfilePageState extends State<UserProfilePage> {
                     clipBehavior: Clip.antiAlias,
                     decoration:
                         BoxDecoration(borderRadius: BorderRadius.circular(100)),
-                    child: Image(
-                        image: AssetImage(isCurrentUser
+                    child: Image.network(currentUser.picture as String))/*AssetImage(isCurrentUser
                             ? "assets/images/usericon.png"
-                            : "assets/images/usericon.png"))),
+                            : "assets/images/usericon.png"))),*/
               ),
             ),
             const SizedBox(

@@ -51,7 +51,7 @@ class MainApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context)=>AuthProvider(),),
           ChangeNotifierProvider(create: (context)=>AttendanceProvider(),),
           ChangeNotifierProvider(create: (context)=>HistoryProvider()),
-          ChangeNotifierProvider(create: (context)=>TeamLeadListProvider()),
+          ChangeNotifierProvider(create: (context)=>LeaveFormProvider()),
           ChangeNotifierProvider(create: (context)=>TeamAttendanceProvider()),
         ],
         child: MaterialApp(

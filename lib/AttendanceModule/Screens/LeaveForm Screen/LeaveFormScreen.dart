@@ -34,6 +34,7 @@ TeamLeads? selectedTeamLead;
 List<TeamLeads> teamLeads = [];
 String _fileText = "";
 String _fileName="";
+File? _file;
 
 
 @override
@@ -78,7 +79,7 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
   }
 
   Future<void> _loadTeamLeadNames()async{
-    List<TeamLeads> leads=await TeamLeadListProvider().GetTeamLeadLsit(context);
+    List<TeamLeads> leads=await LeaveFormProvider().GetTeamLeadLsit(context);
     setState(() {
       teamLeads=leads;
     });
@@ -91,23 +92,18 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
 
     if (result != null && result.files.single.path != null) {
       /// Load result and file details
-      print("Result ${result.files}");
       PlatformFile file = result.files.first;
-      print(file.name);
-      print(file.bytes);
-      print(file.size);
-      print(file.extension);
-      print(file.path);
       //_fileName=file.name;
 
       /// normal file
-      File _file = File(result.files.single.path!);
+      _file = File(result.files.single.path!);
       setState(() {
-        _fileText = _file.path;
+        _fileText = _file!.path;
         _fileName=file.name;
       });
     } else {
       /// User canceled the picker
+      _fileName="Select File";
     }
   }
 
@@ -291,7 +287,9 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
 
               onChanged: (TeamLeads? newValue) {
                 setState(() {
+
                   selectedTeamLead = newValue;
+                  print("Team Lead ID: ${selectedTeamLead!.id.toString()}");
                 });
               },
               items: teamLeads.map((teamLead) {
@@ -363,8 +361,15 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
                       showErrorSnackbar("Please Select Leave Date", context);
                     }
                     else{
-                      showSuccessSnackbar("You Successfully Applied for Leave", context);
-                      ResetAll();
+                      Provider.of<LeaveFormProvider>(context, listen: false).applyForLeave(
+                          _file!,
+                          context,
+                          selectedTeamLead!.id.toString(),
+                          initialDate.toString(),
+                          lastDate.toString(),
+                          countdays.toString(),
+                          Remark.toString()
+                      );
                     }
                   }
 
@@ -375,7 +380,7 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
               ),
               padding: EdgeInsets.symmetric(horizontal: screenWidth/4, vertical: screenHeight/60),
             ),
-                child: Text("Apply for Leave",style: GoogleFonts.roboto(
+                child: Provider.of<LeaveFormProvider>(context,listen: false).isLoading==true?CircularProgressIndicator(color: whiteColor,):Text("Apply for Leave",style: GoogleFonts.roboto(
                     textStyle: TextStyle(
                         fontSize: screenWidth/20,
                         color: Colors.white,
