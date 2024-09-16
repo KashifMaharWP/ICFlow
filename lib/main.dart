@@ -6,15 +6,16 @@ import 'package:taskflow_application/Api/licencekey.dart';
 import 'package:taskflow_application/Api/registration.dart';
 import 'package:taskflow_application/Classes/Device_Info.dart';
 import 'package:taskflow_application/Classes/manageUser_class.dart';
+import 'package:taskflow_application/Module/ComplainModule/Screens/Provider/ComplainProvider.dart';
 import 'package:taskflow_application/Routes/myroutes.dart';
 import 'package:taskflow_application/Screens/Login%20screens/login_page.dart';
 
-import 'AttendanceModule/Provider/Authentication Provider/authProvider.dart';
-import 'AttendanceModule/Screens/Attendance History/Provider/HistoryProvider.dart';
-import 'AttendanceModule/Screens/Attendance Screen/Provider/attendanceProvider.dart';
-import 'AttendanceModule/Screens/LeaveForm Screen/Provider/LeaveFormProvider.dart';
-import 'AttendanceModule/Screens/Team Attendance Screen/Provider/TeamAttendanceProvider.dart';
-import 'AttendanceModule/Utills/Global Class/ScreenSize.dart';
+import 'Module/AttendanceModule/Attendance History/Provider/HistoryProvider.dart';
+import 'Module/AttendanceModule/Attendance Screen/Provider/attendanceProvider.dart';
+import 'Module/AttendanceModule/Team Attendance Screen/Provider/TeamAttendanceProvider.dart';
+import 'Module/LeaveModule/LeaveForm Screen/Provider/LeaveFormProvider.dart';
+import 'Module/Utills/Global Class/ScreenSize.dart';
+
 
 void main() {
   runApp(const MainApp());
@@ -48,11 +49,11 @@ class MainApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => UserDetail()),
           ChangeNotifierProvider(create: (_) => ManageUser()),
           ChangeNotifierProvider(create: (_) => Designation()),
-          ChangeNotifierProvider(create: (context)=>AuthProvider(),),
           ChangeNotifierProvider(create: (context)=>AttendanceProvider(),),
           ChangeNotifierProvider(create: (context)=>HistoryProvider()),
           ChangeNotifierProvider(create: (context)=>LeaveFormProvider()),
           ChangeNotifierProvider(create: (context)=>TeamAttendanceProvider()),
+          ChangeNotifierProvider(create: (context)=>ComplainProvider()),
         ],
         child: MaterialApp(
             routes: AppRoutes.getRoutes(),

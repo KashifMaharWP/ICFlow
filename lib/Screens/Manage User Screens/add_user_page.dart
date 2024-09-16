@@ -5,14 +5,13 @@ import 'package:provider/provider.dart';
 import 'package:taskflow_application/API/designation_model.dart';
 import 'package:taskflow_application/API/jobType_model.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
-import 'package:taskflow_application/API/role_model.dart';
-import 'package:taskflow_application/AttendanceModule/Utills/Global%20Functions/SnackBar.dart';
 import 'package:taskflow_application/Classes/Device_Info.dart';
 import 'package:taskflow_application/Classes/manageUser_class.dart';
 import 'package:taskflow_application/Widgets/message_dialog.dart';
 import 'package:taskflow_application/Widgets/rounded_button.dart';
-import 'package:taskflow_application/Widgets/textfield.dart';
 import 'package:taskflow_application/Widgets/textfield2.dart';
+
+import '../../Module/Utills/Global Functions/SnackBar.dart';
 
 class AddUser extends StatefulWidget {
   const AddUser({super.key});

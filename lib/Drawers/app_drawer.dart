@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
-import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ScreenSize.dart';
-import 'package:taskflow_application/Classes/Device_Info.dart';
 import 'package:taskflow_application/Drawers/TeamLead_option.dart';
 import 'package:taskflow_application/Drawers/admin_option.dart';
 import 'package:taskflow_application/Drawers/user_option.dart';

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/Attendance%20History/Screen/AtdHistoryScreen.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/Attendance%20Screen/Screen/Attedance_screen.dart';
-import 'package:taskflow_application/Screens/Manage%20User%20Screens/add_user_page.dart';
+import 'package:taskflow_application/Module/ComplainModule/Screens/screen/userComplainScreen.dart';
 import 'package:taskflow_application/Screens/SampleScreen/SampleScreen.dart';
 import 'package:taskflow_application/Widgets/dashboard_button.dart';
 
-import '../../../AttendanceModule/Screens/Leave Management/Screen/userLeaveManagement.dart';
+import '../../../Module/AttendanceModule/Attendance Screen/Screen/Attedance_screen.dart';
+import '../../../Module/LeaveModule/Leave Management/Screen/userLeaveManagement.dart';
 
 class UserDashboardButtons extends StatefulWidget {
   const UserDashboardButtons({super.key});
@@ -34,10 +33,10 @@ class _UserDashboardButtons extends State<UserDashboardButtons> {
               }),
           CustomDashboardButton(
               colors: Colors.red,
-              btnName: "Manage Commanents",
+              btnName: "Complain Box",
               ontap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => Samplescreen()));
+                    MaterialPageRoute(builder: (_) => userComplainScreen()));
               }),
           CustomDashboardButton(
               colors: Colors.yellow,

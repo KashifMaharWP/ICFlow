@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ColorHelper.dart';
-import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ScreenSize.dart';
 import 'package:taskflow_application/Classes/Device_Info.dart';
+
+import '../Module/Utills/Global Class/ColorHelper.dart';
+import '../Module/Utills/Global Class/ScreenSize.dart';
 
 class RoundedButton extends StatelessWidget {
   RoundedButton(

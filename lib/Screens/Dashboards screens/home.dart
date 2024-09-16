@@ -7,15 +7,11 @@ import 'package:taskflow_application/API/designation_model.dart';
 import 'package:taskflow_application/API/jobType_model.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
 import 'package:taskflow_application/API/role_model.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/Attendance%20Screen/Provider/attendanceProvider.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/Team%20Attendance%20Screen/Provider/TeamAttendanceProvider.dart';
 import 'package:taskflow_application/Classes/manageUser_class.dart';
 import 'package:taskflow_application/Screens/Dashboards%20screens/dashboard_page.dart';
 import 'package:taskflow_application/Screens/Manage%20User%20Screens/profile_page.dart';
-import 'package:taskflow_application/Screens/Project%20screens/project_page.dart';
-import 'package:taskflow_application/Screens/Task%20screens/task_page.dart';
-
-import '../../AttendanceModule/Screens/Team Attendance Screen/Model/ViewTodyAttendanceModel.dart';
+import '../../Module/AttendanceModule/Attendance Screen/Provider/attendanceProvider.dart';
+import '../../Module/AttendanceModule/Team Attendance Screen/Provider/TeamAttendanceProvider.dart';
 import '../SampleScreen/SampleScreen.dart';
 
 class HomePage extends StatefulWidget {

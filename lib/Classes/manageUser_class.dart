@@ -5,7 +5,6 @@ import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:taskflow_application/API/api_info.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
-import 'package:taskflow_application/Classes/manageUser_class.dart';
 
 class UsersCatalog {
   static final userlist = [

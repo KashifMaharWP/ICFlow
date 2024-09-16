@@ -1,4 +1,3 @@
-import 'package:taskflow_application/Classes/project.dart';
 
 class ProjectMemberCatalog {
   static final List<ProjectAssignment> projectmembers = [

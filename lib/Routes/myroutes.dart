@@ -24,12 +24,13 @@ import 'package:taskflow_application/Screens/Login%20screens/login_page.dart';
 import 'package:taskflow_application/Screens/Manage%20User%20Screens/add_user_page.dart';
 import 'package:taskflow_application/Screens/Manage%20User%20Screens/manage_user_page.dart';
 import 'package:taskflow_application/Screens/Manage%20User%20Screens/profile_page.dart';
-import 'package:taskflow_application/Screens/Project%20screens/add_project_page.dart';
-import 'package:taskflow_application/Screens/Project%20screens/project_page.dart';
 import 'package:taskflow_application/Screens/Registration%20screens/admin_reg_page.dart';
 import 'package:taskflow_application/Screens/Registration%20screens/company_reg_page.dart';
 import 'package:taskflow_application/Screens/SampleScreen/SampleScreen.dart';
-import 'package:taskflow_application/Screens/Task%20screens/task_page.dart';
+
+import '../Module/ProjectModule/Project screens/add_project_page.dart';
+import '../Module/ProjectModule/Project screens/project_page.dart';
+import '../Module/ProjectModule/Task screens/task_page.dart';
 
 class AppRoutes {
   static const String loginPage = "/login";

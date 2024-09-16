@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ScreenSize.dart';
+
+import '../../Module/Utills/Global Class/ScreenSize.dart';
 
 class Samplescreen extends StatelessWidget {
   const Samplescreen({super.key});

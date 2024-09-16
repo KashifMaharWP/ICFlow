@@ -4,20 +4,19 @@ import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
-import 'package:taskflow_application/API/role_model.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/Attendance%20Screen/Provider/attendanceProvider.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/Team%20Attendance%20Screen/Screen/absentUserScreen.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/Team%20Attendance%20Screen/Screen/onlineUserScreen.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/Team%20Attendance%20Screen/Provider/TeamAttendanceProvider.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/Team%20Attendance%20Screen/Screen/presentUserScreen.dart';
-import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ColorHelper.dart';
-import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ScreenSize.dart';
 import 'package:taskflow_application/Classes/Device_Info.dart';
 import 'package:taskflow_application/Drawers/app_drawer.dart';
 import 'package:taskflow_application/Screens/Dashboards%20screens/dashboard%20widget/admin_option_widget.dart';
 import 'package:taskflow_application/Screens/Dashboards%20screens/dashboard%20widget/team_lead_option_widget.dart';
 import 'package:taskflow_application/Screens/Dashboards%20screens/dashboard%20widget/user_option_widget.dart';
 import 'package:taskflow_application/Screens/SampleScreen/SampleScreen.dart';
+
+import '../../Module/AttendanceModule/Team Attendance Screen/Provider/TeamAttendanceProvider.dart';
+import '../../Module/AttendanceModule/Team Attendance Screen/Screen/absentUserScreen.dart';
+import '../../Module/AttendanceModule/Team Attendance Screen/Screen/onlineUserScreen.dart';
+import '../../Module/AttendanceModule/Team Attendance Screen/Screen/presentUserScreen.dart';
+import '../../Module/Utills/Global Class/ColorHelper.dart';
+import '../../Module/Utills/Global Class/ScreenSize.dart';
 
 
 class DashboardPage extends StatefulWidget {

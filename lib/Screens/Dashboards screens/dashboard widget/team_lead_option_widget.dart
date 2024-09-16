@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/Attendance%20Screen/Screen/Attedance_screen.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/Leave%20Management/Screen/leadLeaveManagement.dart';
-import 'package:taskflow_application/AttendanceModule/Screens/Leave%20Management/Screen/userLeaveManagement.dart';
-import 'package:taskflow_application/Screens/Manage%20User%20Screens/add_user_page.dart';
 import 'package:taskflow_application/Screens/Manage%20User%20Screens/manage_user_page.dart';
-import 'package:taskflow_application/Screens/Project%20screens/add_project_page.dart';
 import 'package:taskflow_application/Widgets/dashboard_button.dart';
-
-import '../../../AttendanceModule/Screens/Team Attendance Screen/Screen/onlineUserScreen.dart';
-import '../../../AttendanceModule/Screens/Team Attendance Screen/Provider/TeamAttendanceProvider.dart';
+import '../../../Module/AttendanceModule/Attendance Screen/Screen/Attedance_screen.dart';
+import '../../../Module/LeaveModule/Leave Management/Screen/leadLeaveManagement.dart';
 import '../../SampleScreen/SampleScreen.dart';
 
 class TeamLeadDashboardButtons extends StatefulWidget {

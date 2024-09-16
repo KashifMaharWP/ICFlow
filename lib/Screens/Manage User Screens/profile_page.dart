@@ -5,10 +5,11 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:taskflow_application/API/designation_model.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
-import 'package:taskflow_application/AttendanceModule/Utills/Global%20Class/ScreenSize.dart';
 import 'package:taskflow_application/Classes/Device_Info.dart';
 import 'package:taskflow_application/Classes/manageUser_class.dart';
 import 'package:taskflow_application/Widgets/textfield.dart';
+
+import '../../Module/Utills/Global Class/ScreenSize.dart';
 
 class UserProfilePage extends StatefulWidget {
   UserProfilePage({super.key, this.users, this.isCurrentUserProfile});
