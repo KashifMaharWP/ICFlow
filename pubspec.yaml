@@ -1,7 +1,7 @@
 name: taskflow_application
-description: "A new Flutter project."
+description: "Flow IC Attendance System"
 publish_to: 'none'
-version: 0.1.0
+version: 0.1.4
 
 environment:
   sdk: '>=3.4.3 <4.0.0'
@@ -10,11 +10,10 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
-  http: ^1.2.1
   lottie: ^3.1.2
   provider: ^6.1.2
   shared_preferences: ^2.2.3
-
+  http: ^1.2.2
   google_fonts: ^6.2.1
   font_awesome_flutter: ^10.7.0
   intl: ^0.19.0

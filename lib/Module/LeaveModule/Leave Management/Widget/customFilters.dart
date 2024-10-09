@@ -7,14 +7,15 @@ import '../../../Utills/Global Class/ScreenSize.dart';
 import '../../../Widgets/Global Widgets/customText.dart';
 
 class customFiltersWidget extends StatefulWidget {
-  const customFiltersWidget({super.key});
+  String? filter;
+  customFiltersWidget({super.key,required this.filter});
 
   @override
   State<customFiltersWidget> createState() => _customFiltersWidgetState();
 }
 
 class _customFiltersWidgetState extends State<customFiltersWidget> {
-  String selectedFilter = "All";
+
   String selectedDate=DateFormat("dd MMMM yyyy").format(DateTime.now());
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class _customFiltersWidgetState extends State<customFiltersWidget> {
             whiteColor,
             blackColor,
             primary,
-            selectedFilter == "All",
+            widget.filter == "All",
           ),
           SizedBox(width: 4),
           customFilter(
@@ -33,7 +34,7 @@ class _customFiltersWidgetState extends State<customFiltersWidget> {
             whiteColor,
             blackColor,
             Colors.amber,
-            selectedFilter == "Casual",
+            widget.filter == "Casual",
           ),
           SizedBox(width: 4),
           customFilter(
@@ -41,7 +42,7 @@ class _customFiltersWidgetState extends State<customFiltersWidget> {
             whiteColor,
             blackColor,
             Colors.green,
-            selectedFilter == "Sick",
+            widget.filter == "Sick",
           ),
         ],
       );
@@ -52,7 +53,7 @@ class _customFiltersWidgetState extends State<customFiltersWidget> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          selectedFilter = text; // Update the selected filter when tapped
+          widget.filter = text; // Update the selected filter when tapped
         });
       },
       child: Container(

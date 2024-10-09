@@ -208,7 +208,7 @@ class _absentUsersState extends State<absentUsers> {
                                       fontWeight: FontWeight.bold
                                   )
                               ),),
-                            );;
+                            );
                           }
 
                         },

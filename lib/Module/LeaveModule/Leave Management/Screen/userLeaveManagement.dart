@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:taskflow_application/Module/LeaveModule/Leave%20Management/Model/userLeaveModel.dart';
+import '../../../AttendanceModule/Attendance History/Attendance History Shimmer/AttendanceHistoryShimmerScreen.dart';
 import '../../../Utills/Global Class/ColorHelper.dart';
 import '../../../Utills/Global Class/ScreenSize.dart';
 import '../../../Widgets/Global Widgets/customNoBoldText.dart';
 import '../../../Widgets/Global Widgets/customText.dart';
 import '../../LeaveForm Screen/LeaveFormScreen.dart';
+import '../Provider/leaveProvider.dart';
 import '../Widget/customFilters.dart';
 import '../Widget/customPopUp.dart';
 
@@ -21,10 +25,25 @@ class userLeaveManagement extends StatefulWidget {
 
 class _userLeaveManagementState extends State<userLeaveManagement> {
   String selectedDate=DateFormat("dd MMMM yyyy").format(DateTime.now());
-
+  String selectedFilter="All";
+  Future<UserLeaveModel>? _leaveList;
 
   void applyForLeave(){
     Navigator.push(context, MaterialPageRoute(builder: (context)=>LeaveFormScreen()));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  void _fetchData() {
+    setState(() {
+      _leaveList =
+          Provider.of<LeaveProvider>(context, listen: false)
+              .getUserLeave(context, selectedDate, selectedFilter);
+    });
   }
 
   @override
@@ -91,7 +110,7 @@ class _userLeaveManagementState extends State<userLeaveManagement> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        customFiltersWidget(),
+                        customFiltersWidget(filter: selectedFilter,),
                         Image(image: AssetImage("assets/icons/calendar.png"),width: screenWidth/10,)
                       ],
                     ),
@@ -143,7 +162,7 @@ Widget customCard(String text, IconData icon, Color iconColor,Color textColor, S
           Center(child: customNoBoldText(text: text, fontSize: screenWidth/30, fontColor: textColor)),
 
           Center(
-            child: customText(text: Count, fontSize: screenWidth/2, fontColor: blackColor),
+            child: customText(text: Count, fontSize: screenWidth/22, fontColor: blackColor),
           )
 
         ],
@@ -167,70 +186,119 @@ Widget wrapCustomCard(){
 
 //ListView Widget
   Widget listViewContainer(){
-    return Expanded(
-      child: ListView.builder(
-          itemCount: 5,
-          itemBuilder: (BuildContext context, int index) {
-            return InkWell(
-              onTap: (){
-                customPopUp(context);
-              },
-              child: Container(
-                  margin: EdgeInsets.all(screenWidth/80),
-                  padding: EdgeInsets.symmetric(vertical: 10,horizontal: 14),
-                  decoration: BoxDecoration(
-                      color: whiteColor,
-                      borderRadius: BorderRadius.circular(screenWidth/20),
-                      boxShadow: [
-                        BoxShadow(
-                            color: CupertinoColors.systemGrey2,
-                            offset: Offset(2, 2),
-                            blurRadius: 10
-                        )
-                      ]
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Kashif Mahar",style: GoogleFonts.roboto(
-                                textStyle: TextStyle(
-                                    color: blackColor,
-                                    fontSize: screenWidth/20,
-                                    fontWeight: FontWeight.bold
-                                )
-                            ),),
-                            customNoBoldText(text: "Casual Leave Application", fontSize: screenWidth/25, fontColor: blackColor),
-                            SizedBox(height: 5,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                customText(text: "Casual", fontSize: screenWidth/22, fontColor: Colors.amber),
-                                Container(
-                                  width: screenWidth/4,
-                                  height: screenHeight/28,
-                                  decoration: BoxDecoration(
-                                      color: Colors.green.shade200,
-                                      borderRadius: BorderRadius.circular(10)
-                                  ),
-                                  child: Center(child: customNoBoldText(text: "Active", fontSize: screenWidth/24, fontColor: whiteColor)),
-                                )
-                              ],
-                            )
-                          ],
+    return  Consumer<LeaveProvider>(
+        builder: (context, provider, child) {
+          return Expanded(
+            child: FutureBuilder<UserLeaveModel>(
+                future: _leaveList,
+                builder: (context, dataSnapshot) {
+            if (dataSnapshot.connectionState == ConnectionState.waiting) {
+              return AttendanceHistoryShimmer();
+            } else if (dataSnapshot.error != null) {
+              return Center(child: Text('An error occurred! ${dataSnapshot.error}'));
+            }
+            else if(dataSnapshot.hasData) {
+              final leaveDatasnap = dataSnapshot.data;
+              final leaveRecord = leaveDatasnap?.myLeaves;
+              if (leaveRecord == null) {
+                return Center(
+                  child: Text("No one Application", style: GoogleFonts.roboto(
+                      textStyle: TextStyle(
+                          fontSize: screenWidth / 20,
+                          color: primary,
+                          fontWeight: FontWeight.bold
+                      )
+                  ),),
+                );
+              }
+              var leaveData =
+                  dataSnapshot.data?.myLeaves?.toList() ?? [];
+              return ListView.builder(
+                  itemCount: leaveData.length,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                onTap: () {
+                  customPopUp(context,leaveData[index].description??'',leaveData[index].intialDate??'',leaveData[index].endDate??'',leaveData[index].totalDays??'');
+                },
+                child: Container(
+                    margin: EdgeInsets.all(screenWidth / 80),
+                    padding: EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 14),
+                    decoration: BoxDecoration(
+                        color: whiteColor,
+                        borderRadius: BorderRadius.circular(
+                            screenWidth / 20),
+                        boxShadow: [
+                          BoxShadow(
+                              color: CupertinoColors.systemGrey2,
+                              offset: Offset(2, 2),
+                              blurRadius: 10
+                          )
+                        ]
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                leaveData[index].user!.fullName??'',
+                                style: GoogleFonts.roboto(
+                                    textStyle: TextStyle(
+                                        color: blackColor,
+                                        fontSize: screenWidth / 20,
+                                        fontWeight: FontWeight.bold
+                                    )
+                                ),),
+                              customNoBoldText(
+                                  text: "Casual Leave Application",
+                                  fontSize: screenWidth / 25,
+                                  fontColor: blackColor),
+                              SizedBox(height: 5,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment
+                                    .center,
+                                children: [
+                                  customText(text: "Casual",
+                                      fontSize: screenWidth / 22,
+                                      fontColor: Colors.amber),
+                                  Container(
+                                    width: screenWidth / 4,
+                                    height: screenHeight / 28,
+                                    decoration: BoxDecoration(
+                                        color: Colors.green.shade200,
+                                        borderRadius: BorderRadius.circular(
+                                            10)
+                                    ),
+                                    child: Center(child: customNoBoldText(
+                                        text: "Active",
+                                        fontSize: screenWidth / 24,
+                                        fontColor: whiteColor)),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  )
+                      ],
+                    )
 
-              ),
-            );
-          }),
-    );
+                ),
+              );
+                  }
+                  );
+            }
+            return Container();
+
+                }),
+          );
+        }
+        );
   }
+
 }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
 import 'package:taskflow_application/Classes/Device_Info.dart';
@@ -189,14 +190,10 @@ class _DashboardPageState extends State<DashboardPage> {
         Consumer<TeamAttendanceProvider>(
           builder: (context, provider, child) {
             if (provider.isLoading==true) {
-              return Text("0",
-                style: GoogleFonts.roboto(
-                    textStyle: TextStyle(
-                        color: lightBlackColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: screenWidth/15
-                    )
-                ),);
+              return LoadingAnimationWidget.hexagonDots(
+                  color: blackColor,
+                  size: screenWidth/12
+              );
             } else {
               return Text("${provider.onlineCount}",
                 style: GoogleFonts.roboto(
@@ -209,17 +206,6 @@ class _DashboardPageState extends State<DashboardPage> {
             }
           },
         )
-
-
-                     /*Text("0",
-                        style: GoogleFonts.roboto(
-                            textStyle: TextStyle(
-                                color: lightBlackColor,
-                                fontWeight: FontWeight.w500,
-                                fontSize: screenWidth/15
-                            )
-                        ),)*/
-
                     ],
                   ),
                 )),
@@ -265,14 +251,10 @@ class _DashboardPageState extends State<DashboardPage> {
                       Consumer<TeamAttendanceProvider>(
                         builder: (context, provider, child) {
                           if (provider.isLoading==true) {
-                            return Text("0",
-                              style: GoogleFonts.roboto(
-                                  textStyle: TextStyle(
-                                      color: lightBlackColor,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: screenWidth/15
-                                  )
-                              ),);
+                            return LoadingAnimationWidget.hexagonDots(
+                                color: blackColor,
+                                size: screenWidth/12
+                            );
                           } else {
                             return Text("${provider.offlineCount}",
                               style: GoogleFonts.roboto(
@@ -313,14 +295,10 @@ class _DashboardPageState extends State<DashboardPage> {
                       Consumer<TeamAttendanceProvider>(
                         builder: (context, provider, child) {
                           if (provider.isLoading==true) {
-                            return Text("0",
-                              style: GoogleFonts.roboto(
-                                  textStyle: TextStyle(
-                                      color: lightBlackColor,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: screenWidth/15
-                                  )
-                              ),);
+                            return LoadingAnimationWidget.hexagonDots(
+                                color: blackColor,
+                                size: screenWidth/12
+                            );
                           } else {
                             return Text("${provider.presentCount}",
                               style: GoogleFonts.roboto(

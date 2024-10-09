@@ -193,7 +193,7 @@ class _ViewAttendanceState extends State<ViewAttendance> {
                               fontWeight: FontWeight.bold
                           )
                       ),),
-                    );;
+                    );
                   }
 
                 },

@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:taskflow_application/Module/LeaveModule/LeaveForm%20Screen/LeaveFormScreen.dart';
 import '../../../Utills/Global Class/ColorHelper.dart';
 import '../../../Utills/Global Class/ScreenSize.dart';
 import '../../../Widgets/Global Widgets/customNoBoldText.dart';
 import '../../../Widgets/Global Widgets/customText.dart';
 import 'WrapTextWidget_AB.dart';
 
-customPopUp(BuildContext context)async {
-  String message="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.";
+customPopUp(BuildContext context,String description,intialDate,endDate,totalDays)async {
+  String message=description;
   AlertDialog alert = AlertDialog(
     title: customText(text: "Leave Status", fontSize: screenWidth/20, fontColor: blackColor),
     backgroundColor: whiteColor,
@@ -35,9 +36,9 @@ customPopUp(BuildContext context)async {
             ),
           ),
           SizedBox(height: screenHeight/40,),
-          WrapText(title: "Total Days", value: " 2"),
-          WrapText(title: "Start from", value: " ${DateFormat('EEE dd MMM yyyy').format(DateTime.now())}"),
-          WrapText(title: "Re-joining Date", value: " ${DateFormat('EEE dd MMM yy').format(DateTime.now())}"),
+          WrapText(title: "Total Days", value: totalDays),
+          WrapText(title: "Start from", value: initialDate.toString()),
+          WrapText(title: "Re-joining Date", value: endDate),
         ],
       ),
     ),

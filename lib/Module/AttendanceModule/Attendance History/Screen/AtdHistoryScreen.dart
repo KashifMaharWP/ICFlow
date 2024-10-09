@@ -159,9 +159,9 @@ class _AtdHistoryScreenState extends State<AtdHistoryScreen> {
                           alignment: Alignment.center,
                           child: Wrap(children: [
                             Consumer<HistoryProvider>(
-                              builder: (context, AtdHistProvider, child) {
+                              builder: (context, provider, child) {
                                 return Text(
-                                  DateFormat("MMMM").format(AtdHistProvider.currentMonth),
+                                  DateFormat("MMMM").format(provider.currentMonth),
                                   style: GoogleFonts.roboto(
                                     textStyle: TextStyle(
                                       color: lightBlackColor,

@@ -36,14 +36,14 @@ class _UserDashboardButtons extends State<UserDashboardButtons> {
               btnName: "Complain Box",
               ontap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => userComplainScreen()));
+                    MaterialPageRoute(builder: (_) => Samplescreen()));
               }),
           CustomDashboardButton(
               colors: Colors.yellow,
               btnName: "Manage Leave",
               ontap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => userLeaveManagement()));
+                    MaterialPageRoute(builder: (_) => Samplescreen()));
               }),
           CustomDashboardButton(
               colors: Colors.green,

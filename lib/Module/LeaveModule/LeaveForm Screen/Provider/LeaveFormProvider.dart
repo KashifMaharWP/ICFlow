@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../API/login_user_detail.dart';
@@ -38,10 +39,16 @@ class LeaveFormProvider extends ChangeNotifier{
     setlistLoading(false);
     String URL="${ApiDetail.BaseAPI}${ApiDetail.TeamLeadList}";
     try{
-      Response response = await http.get(Uri.parse(URL));
+      Response response = await http.get(Uri.parse(URL),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${Provider.of<UserDetail>(context,listen: false).token} "
+          }
+      );
+
       if(response.statusCode==200){
         var data = jsonDecode(response.body);
-        var result=data["teamHeads"] as List;
+        var result=data["myTeamLead"] as List;
         teamLeadList=result.map((element)=>TeamLeads.fromMap(element)).toList();
         /*
        teamLeadList=(data["teamHeads"] as List)
@@ -61,7 +68,23 @@ class LeaveFormProvider extends ChangeNotifier{
     return teamLeadList;
   }
 
-   Future<void> applyForLeave(File? file,BuildContext context,String teamHeadId,teamHeadEmail,teamHeadName,initialDate,endDate,totalDays,description,) async {
+   Future<void> applyForLeave(File? file,BuildContext context,String initialDate,endDate,totalDays,leaveType,description,) async {
+
+     if (teamLeadList.isEmpty) {
+       await GetTeamLeadLsit(context);
+     }
+
+     // Assuming you want to get the first team lead in the list (or find the appropriate one)
+     TeamLeads? selectedTeamLead;
+     if (teamLeadList.isNotEmpty) {
+       selectedTeamLead = teamLeadList.first; // Change logic if needed
+     }
+
+     if (selectedTeamLead == null) {
+       showErrorSnackbar("No Team Lead found", context);
+       return;
+     }
+
      final uri = Uri.parse('${ApiDetail.BaseAPI}${ApiDetail.applyLeave}');
      setisSuccessful(false);
      print("Is Successful ==${isSuccessful}");
@@ -78,12 +101,14 @@ class LeaveFormProvider extends ChangeNotifier{
      request.headers["Authorization"]="Bearer ${Provider.of<UserDetail>(context, listen: false).token}";
 
      // Attach additional form data
-     request.fields['teamHead'] = teamHeadId;
-     request.fields['teamLeadEmail'] = teamHeadEmail;
-     request.fields['teamLeadName'] = teamHeadName;
+     request.fields['applydate']=DateFormat("dd MMMM yyyy").format(DateTime.now()).toString();
+     request.fields['teamHead'] = selectedTeamLead.id;
+     request.fields['teamLeadEmail'] = selectedTeamLead.email;
+     request.fields['teamLeadName'] = selectedTeamLead.fullName;
      request.fields['intialDate'] = initialDate;
      request.fields['endDate'] = endDate;
      request.fields['totalDays'] = totalDays;
+     request.fields['leaveType'] = leaveType;
      request.fields['description'] = description;
 
      try {

@@ -79,19 +79,20 @@ void setUserDetailByPreferences() async{
    Future clearUserPreferences() async {
     
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString("userId", "");
-    await prefs.setString("fullName", "");
-    await prefs.setString("contact", "");
-    await prefs.setString("email", "");
-    await prefs.setString("address", "");
-    await prefs.setString("roleId", "");
-    await prefs.setString("designationId", "");
-    await prefs.setString("jobTypeId", "");
-    await prefs.setString("companyId", "");
-    await prefs.setString("token", "");
-    await prefs.setString("picture", "");
 
-    //uncomment the below to clear the picture preferences
-    //await prefs.setString("Picture", "");
+    await prefs.remove("userId");
+    await prefs.remove("fullName");
+    await prefs.remove("contact");
+    await prefs.remove("email");
+    await prefs.remove("address");
+    await prefs.remove("roleId");
+    await prefs.remove("designationId");
+    await prefs.remove("jobTypeId");
+    await prefs.remove("companyId");
+    await prefs.remove("token");
+    await prefs.remove("picture");
+
+     // Uncomment the below to clear the picture preferences (if it's named differently)
+     // await prefs.remove("Picture");
   }
 }

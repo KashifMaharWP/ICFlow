@@ -34,10 +34,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<AttendanceProvider>(context, listen: false)
           .fetchAttendanceData(context);
+      print("Attendance Fetch called");
       //refresh();
     });
   }
-  void _fetchData(){
+  /*void _fetchData(){
+    print("Fetch Attendnace");
     final atdProvider = Provider.of<AttendanceProvider>(context, listen: false);
     atdProvider.fetchAttendanceData;
   }
@@ -47,7 +49,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       print("Refresh Button Clicked");
       _fetchData();
     });
-  }
+  }*/
 
   showLoaderDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
@@ -173,10 +175,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       showLoaderDialog(context);
       if (!isCheckedIn) {
         await getCurrentLocationCheckInTime(context);
-        refresh();
+        //refresh();
       } else {
         await getCurrentLocationCheckOutTime(context);
-        refresh();
+       // refresh();
       }
       Navigator.pop(context);
     }
@@ -184,7 +186,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //midNightTimer().MidNightTimerCheck();
+    print("Widget Build");
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -392,43 +394,69 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   Widget attendanceButton() {
-    final atdProvider = Provider.of<AttendanceProvider>(context);
-    return Container(
-        margin: EdgeInsets.zero,
-        width: screenWidth / 2.3,
-        height: screenHeight / 4,
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                color: CupertinoColors.systemGrey2,
-                offset: Offset(2, 2),
-                blurRadius: 4,
-                spreadRadius: 2)
-          ],
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-              colors: atdProvider.isDisabled == false
-                  ? atdProvider.ischeckedIn == true
-                      ? [Colors.cyan, Colors.blue]
-                      : [Colors.pink, Colors.redAccent]
-                  : [Colors.black12, Colors.white38]),
-        ),
-        child: InkWell(
-          onTap: atdProvider.isDisabled == false
-              ? () {
-                  if (atdProvider.ischeckedIn == true) {
-                    confirmAttendance("Check Out", context);
-                  } else {
-                    confirmAttendance("Check In", context);
-                  }
-                }
-              : () {},
-          child: CircleAvatar(
+    return Consumer<AttendanceProvider>(builder: (context, provider, child) {
+      return provider.isLoading?
+          Container(
+            margin: EdgeInsets.zero,
+            width: screenWidth / 2.3,
+            height: screenHeight / 4,
+            decoration: BoxDecoration(
+              /*boxShadow: [
+                BoxShadow(
+                    color: CupertinoColors.systemGrey2,
+                    offset: Offset(2, 2),
+                    blurRadius: 4,
+                    spreadRadius: 2)
+              ],*/
+              /*shape: BoxShape.circle,*/
+              gradient: LinearGradient(
+                  colors: [Colors.white, Colors.white]
+              ),
+            ),
+            child: CircleAvatar(
               backgroundColor: Colors.transparent,
-              child: atdProvider.ischeckedIn == true
-                  ? customText("Check Out", screenWidth / 22, whiteColor)
-                  : customText("Check In", screenWidth / 22, whiteColor)),
-        ));
+              child: LoadingAnimationWidget.hexagonDots(color: primary, size: screenWidth/6),
+            ),
+          )
+          :Container(
+          margin: EdgeInsets.zero,
+          width: screenWidth / 2.3,
+          height: screenHeight / 4,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  color: CupertinoColors.systemGrey2,
+                  offset: Offset(2, 2),
+                  blurRadius: 4,
+                  spreadRadius: 2)
+            ],
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+                colors:
+                provider.isDisabled == false
+                    ? provider.ischeckedIn == true
+                    ? [Colors.cyan, Colors.blue]
+                    : [Colors.pink, Colors.redAccent]
+                    : [Colors.black12, Colors.white38]
+            ),
+          ),
+          child: InkWell(
+            onTap: provider.isDisabled == false
+                ? () {
+              if (provider.ischeckedIn == true) {
+                confirmAttendance("Check Out", context);
+              } else {
+                confirmAttendance("Check In", context);
+              }
+            }
+                : () {},
+            child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                child: provider.ischeckedIn == true
+                    ? customText("Check Out", screenWidth / 22, whiteColor)
+                    : customText("Check In", screenWidth / 22, whiteColor)),
+          ));
+    });
   }
 
   Widget customText(String text, double fontSize, Color fontColor) {
@@ -444,9 +472,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   Widget monthWorkHrStatus() {
-    int workingHrs =
-        Provider.of<AttendanceProvider>(context).countMonthWorkingHrs(context);
-    final atdProvider = Provider.of<AttendanceProvider>(context);
     return Column(
       children: [
         Container(
@@ -467,20 +492,22 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SimpleCustomCard(
+          Consumer<AttendanceProvider>(builder: (context, provider, child) {
+            return SimpleCustomCard(
               label: "Working Hours",
-              progressValue: "${workingHrs} Hrs",
+              progressValue: "${provider.countMonthWorkingHrs(context).toString()} Hrs",
               color: blackColor,
               headingColor: primary,
               backgroundColor: whiteColor,
               screenWidth: screenWidth,
               screenHeight: screenHeight,
-            ),
+            );}
+          ),
             Consumer<AttendanceProvider>(builder: (context, provider, child) {
               return SimpleCustomCard(
                 label: "Remaining",
                 progressValue:
-                    "${atdProvider.remWorkingHrs} Hrs : ${atdProvider.remWorkingMin} Min",
+                    "${provider.remWorkingHrs} Hrs : ${provider.remWorkingMin} Min",
                 color: blackColor,
                 headingColor: primary,
                 backgroundColor: whiteColor,

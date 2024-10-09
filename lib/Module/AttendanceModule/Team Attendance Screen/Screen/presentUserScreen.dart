@@ -259,7 +259,7 @@ class _presentUsersState extends State<presentUsers> {
                                       fontWeight: FontWeight.bold
                                   )
                               ),),
-                            );;
+                            );
                           }
 
                         },

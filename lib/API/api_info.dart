@@ -1,3 +1,3 @@
 class Api {
-  static const apiUrl = "https://backend-production-6e95.up.railway.app/api/";
+  static const apiUrl = "https://flow-backend-ic-production.up.railway.app/api/";
 }

@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
+import 'package:taskflow_application/Module/AttendanceModule/Attendance%20Screen/Functions/loaderWidget.dart';
 import '../../../Utills/Global Class/GlobalAPI.dart';
 import 'package:http/http.dart' as http;
 import '../../../Utills/Global Functions/SnackBar.dart';
@@ -55,15 +56,16 @@ class AttendanceProvider extends ChangeNotifier {
   Future<void> fetchAttendanceData(BuildContext context) async {
     setisLoading(true);
     try {
-      await countTotalWorkedMin(
-          context, DateFormat("MMMM").format(DateTime.now()));
+      print("Fetch Attendance");
+      await countTotalWorkedMin(context, DateFormat("MMMM").format(DateTime.now()));
       await countMonthWorkingHrs(context);
-      await CountWorkDays();
+      //await CountWorkDays();
       await getTodayAttendance(context);
-      await getTodayAttendance;
+      //await getTodayAttendance;
     } catch (e) {
       print("Error: $e");
-      showErrorSnackbar("There was an error: $e", context);
+      showErrorSnackbar("Please Check Internet", context);
+      Navigator.pop(context);
     } finally {
       setisLoading(false);
     }
@@ -183,6 +185,7 @@ class AttendanceProvider extends ChangeNotifier {
     Navigator.pop(context);
   }
 
+
   //This Function is used to get Current Month Total Worked Hours
   Future<void> countTotalWorkedMin(BuildContext context, String Month) async {
     String url = "${ApiDetail.BaseAPI}${ApiDetail.ViewWorkingHrs}${Month}";
@@ -197,15 +200,17 @@ class AttendanceProvider extends ChangeNotifier {
     );
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print("CountWorking Hours");
+      //print("CountWorking Hours");
       totalWorkingMin = json['workingMinutes'] ?? 0;
-      print("Response : ${response.body}");
+     // print("Response : ${response.body}");
       countRemWorkingTime(context);
       notifyListeners();
     }
     else {
       showErrorSnackbar(
-          "There is Error Occured ${response.statusCode}", context);
+          "There is Error Occured: Please Check Internet Connection", context);
+          Navigator.pop(context);
+          print("Response: ${response.body}");
     }
     notifyListeners();
   }
@@ -216,8 +221,8 @@ class AttendanceProvider extends ChangeNotifier {
     DateTime now = DateTime.now();
     DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
     DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
-    print(now.day);
-    print(now.weekday);
+    //print("Days: ${now.day}");
+    //print(now.weekday);
     for (int i = 0; i < lastDayOfMonth.day; i++) {
       DateTime day = firstDayOfMonth.add(Duration(days: i));
       if (day.weekday >= DateTime.monday && day.weekday <= DateTime.friday) {
@@ -252,9 +257,9 @@ class AttendanceProvider extends ChangeNotifier {
   Future<void> getTodayAttendance(BuildContext context) async {
     setisCheckLoading(true);
     String currentDate=DateFormat("EEE MMM dd yyyy").format(DateTime.now());
-
     String url = "${ApiDetail.BaseAPI}${ApiDetail.todayAttendnace}/${currentDate}";
     try {
+
       final response = await http.get(
         Uri.parse(url),
         headers: {
@@ -262,7 +267,7 @@ class AttendanceProvider extends ChangeNotifier {
           "Authorization": "Bearer ${Provider.of<UserDetail>(context, listen: false).token}"
         },
       );
-      print(currentDate);
+      //print(currentDate);
       if (response.statusCode == 200) {
         // Decode the response body to a Map
         var data = jsonDecode(response.body);
@@ -279,7 +284,7 @@ class AttendanceProvider extends ChangeNotifier {
             checkInTime = firstAttendance['checkIn']['time'].toString();
             setIsdisabled(false);
             setischeckedIn(true);
-            print("CheckIN: $checkInTime");
+            //print("CheckIN: $checkInTime");
           }
           else {
             checkInTime="--|--";
@@ -310,9 +315,11 @@ class AttendanceProvider extends ChangeNotifier {
         checkOutTime="--|--";
       }
     } catch (e) {
-      print("Exception: $e");
+      showErrorSnackbar("Server is not responding. Please check your Internet connection", context);
+      //print("Exception: $e");
     }
     finally{
+      setisCheckLoading(false);
       notifyListeners();
     }
   }

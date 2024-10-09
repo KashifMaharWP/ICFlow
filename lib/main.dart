@@ -7,6 +7,7 @@ import 'package:taskflow_application/Api/registration.dart';
 import 'package:taskflow_application/Classes/Device_Info.dart';
 import 'package:taskflow_application/Classes/manageUser_class.dart';
 import 'package:taskflow_application/Module/ComplainModule/Screens/Provider/ComplainProvider.dart';
+import 'package:taskflow_application/Module/LeaveModule/Leave%20Management/Provider/leaveProvider.dart';
 import 'package:taskflow_application/Routes/myroutes.dart';
 import 'package:taskflow_application/Screens/Login%20screens/login_page.dart';
 
@@ -54,6 +55,7 @@ class MainApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context)=>LeaveFormProvider()),
           ChangeNotifierProvider(create: (context)=>TeamAttendanceProvider()),
           ChangeNotifierProvider(create: (context)=>ComplainProvider()),
+          ChangeNotifierProvider(create: (context)=>LeaveProvider()),
         ],
         child: MaterialApp(
             routes: AppRoutes.getRoutes(),

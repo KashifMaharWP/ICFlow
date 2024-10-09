@@ -31,13 +31,15 @@ int countdays=0;
 DateRangePickerController _dateRangePickerController = DateRangePickerController();
 final Remark = TextEditingController();
 final _LeaveformKey=GlobalKey<FormState>();
-TeamLeads? selectedTeamLead;
-List<TeamLeads> teamLeads = [];
 String _fileText = "";
 String _fileName="Pick a File (.jpg .png)";
 File? _file;
 bool isClearShow=false;
-
+String? leaveType ;
+var leaveTypeItem = [
+  'Sick',
+  'Casual',
+];
 
 @override
 class _LeaveFormScreenState extends State<LeaveFormScreen> {
@@ -71,24 +73,20 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
     reset();
     setState(() {
       Remark.clear();
-      selectedTeamLead=null;
+      //selectedTeamLead=null;
       _file=null;
       _fileName="Pick a File (.jpg .png)";
       isClearShow=false;
+      leaveType=null;
+
     });
   }
   void initState() {
     // TODO: implement initState
     super.initState();
-    _loadTeamLeadNames();
+    ResetAll();
   }
 
-  Future<void> _loadTeamLeadNames()async{
-    List<TeamLeads> leads=await LeaveFormProvider().GetTeamLeadLsit(context);
-    setState(() {
-      teamLeads=leads;
-    });
-  }
 
   void _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -279,10 +277,13 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
         key: _LeaveformKey,
         child: Column(
           children: [
-            DropdownButtonFormField<TeamLeads>(
-              value: selectedTeamLead,
+
+            //DropDown Menu
+            DropdownButtonFormField<String>(
+              dropdownColor: Colors.white,
+              value: leaveType,
               hint: Text(
-                '*Select Team Lead',
+                'Select Leave Type',
                 style: GoogleFonts.roboto(
                   textStyle: TextStyle(
                     fontSize: screenWidth / 30,
@@ -290,25 +291,21 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
                 ),
               ),
 
-              onChanged: (TeamLeads? newValue) {
+              onChanged: (String? newValue) {
                 setState(() {
-
-                  selectedTeamLead = newValue;
-                  isClearShow=true;
+                  leaveType = newValue!;
                 });
               },
-              items: teamLeads.map((teamLead) {
-                return DropdownMenuItem<TeamLeads>(
+              items: leaveTypeItem.map((String items) {
+                return DropdownMenuItem<String>(
                     alignment: Alignment.centerLeft,
-                    value: teamLead,
-                    child: Container(
-                      child: Text(teamLead.fullName),
-                    )
+                    value: items,
+                    child: Text(items.toString())
                 );
               }).toList(),
               validator: (value) {
                 if (value == null) {
-                  return "Select Your Team Lead";
+                  return "Select Leave Type";
                 }
                 return null;
               },
@@ -317,11 +314,10 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
                 border: OutlineInputBorder(),
               ),
             ),
-
-
             SizedBox(
-              height: screenHeight/50,
+              height: screenWidth/20,
             ),
+
 
             TextFormField(
               controller: Remark,
@@ -375,49 +371,7 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
                 loading: false,
                 on_Tap: _applyLeave
             ),
-            /*ElevatedButton(
-                onPressed: ()async{
-                  if(_LeaveformKey.currentState!.validate()){
-                    if(initialDate==null || lastDate==null){
-                      showErrorSnackbar("Please Select Leave Date", context);
-                    }
-                    else{
-                      countdays=_calculateDaysBetween(initialDate, lastDate).toInt();
-                     await confirmLeaveBox(
-                          _file,
-                          context,
-                          selectedTeamLead!.id.toString(),
-                          selectedTeamLead!.email.toString(),
-                          selectedTeamLead!.fullName.toString(),
-                          DateFormat("dd MM yyyy").format(initialDate!).toString(),
-                          DateFormat("dd MM yyyy").format(lastDate!).toString(),
-                          countdays.toString(),
-                          Remark.text.toString()
-                      );
 
-                     await Provider.of<LeaveFormProvider>(context,listen: false).isSuccessful?ResetAll():null;
-
-                    }
-                  }
-
-                },style: ElevatedButton.styleFrom(
-              backgroundColor: primary,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)
-              ),
-              padding: EdgeInsets.symmetric(horizontal: screenWidth/4, vertical: screenHeight/60),
-            ),
-                child: Text(
-                  "Apply for Leave",
-                  style: GoogleFonts.roboto(
-                    textStyle: TextStyle(
-                      fontSize: screenWidth / 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-            )*/
           ],
         ),
       ),
@@ -435,12 +389,10 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
         await confirmLeaveBox(
             _file,
             context,
-            selectedTeamLead!.id.toString(),
-            selectedTeamLead!.email.toString(),
-            selectedTeamLead!.fullName.toString(),
-            DateFormat("dd MM yyyy").format(initialDate!).toString(),
-            DateFormat("dd MM yyyy").format(lastDate!).toString(),
+            DateFormat("EEE dd MM yyyy").format(initialDate!).toString(),
+            DateFormat("EEE dd MM yyyy").format(lastDate!).toString(),
             countdays.toString(),
+            leaveType.toString(),
             Remark.text.toString()
         );
 

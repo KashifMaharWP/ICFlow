@@ -26,6 +26,7 @@ class HistoryProvider extends ChangeNotifier{
 
 Future<AttendanceHistoryModel> GetAttendanceData(String month,BuildContext context) async {
   String URL="${ApiDetail.BaseAPI}${ApiDetail.AtdHistory}${month}";
+  print(month);
   try{
     Response response=await http.get(Uri.parse(URL),
         headers: {
@@ -34,9 +35,10 @@ Future<AttendanceHistoryModel> GetAttendanceData(String month,BuildContext conte
         }
     );
 
-    print(month);
+    print("Month Date: ${month}");
     var data = jsonDecode(response.body.toString());
   if(response.statusCode==200){
+    print("This Histpry Data: ${data}");
     return AttendanceHistoryModel.fromJson(data);
   }
   else if(response.statusCode==400){
@@ -48,7 +50,8 @@ Future<AttendanceHistoryModel> GetAttendanceData(String month,BuildContext conte
   }
   }catch(e){
     print(e);
-    showErrorSnackbar("There is error Occured during connection : ${e}", context);
+    showErrorSnackbar("Please Check Your Internet Connection", context);
+    Navigator.pop(context);
   }
   return AttendanceHistoryModel();
 }

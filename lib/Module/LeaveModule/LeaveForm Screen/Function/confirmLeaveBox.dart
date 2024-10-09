@@ -13,12 +13,11 @@ import '../Provider/LeaveFormProvider.dart';
 Future confirmLeaveBox(
     File? file,
     BuildContext context,
-    String teamHeadId,
-    teamHeadEmail,
-    teamHeadName,
+    String
     initialDate,
     endDate,
     totalDays,
+    leaveType,
     description) async {
   // Capture the Provider value before the dialog dismisses
 
@@ -117,12 +116,10 @@ Future confirmLeaveBox(
     await Provider.of<LeaveFormProvider>(context,listen: false).applyForLeave(
         file,
         context,
-        teamHeadId,
-        teamHeadEmail,
-        teamHeadName,
         initialDate,
         endDate,
         totalDays,
+        leaveType,
         description,
 
     );

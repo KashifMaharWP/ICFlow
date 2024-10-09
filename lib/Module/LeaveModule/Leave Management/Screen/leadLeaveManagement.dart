@@ -60,7 +60,7 @@ class _teamLeadLeaveManagementState extends State<teamLeadLeaveManagement> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      customFiltersWidget(),
+                      customFiltersWidget(filter: '',),
                       Image(image: AssetImage("assets/icons/calendar.png"),width: screenWidth/10,)
                     ],
                   )
@@ -90,7 +90,7 @@ class _teamLeadLeaveManagementState extends State<teamLeadLeaveManagement> {
           itemBuilder: (BuildContext context, int index) {
             return InkWell(
               onTap: (){
-                customPopUp(context);
+                //customPopUp(context);
               },
               child: Container(
                   margin: EdgeInsets.all(screenWidth/80),
