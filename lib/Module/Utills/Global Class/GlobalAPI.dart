@@ -14,6 +14,11 @@ class ApiDetail{
   static String uploadProfile="user/updatePicture";
   static String applyLeave="leave/apply";
   static String getLeave="leave/getMyLeaves";
+  static String getMyComments="comment/getMyComments";
+  static String getAllComments="comment/getAllComments";
+  static String deleteComment="comment/delete";
+  static String updateComment="comment/update";
+
 }
 
 

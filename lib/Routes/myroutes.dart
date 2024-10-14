@@ -45,7 +45,7 @@ class AppRoutes {
   static const String addProjectPage = '/addprojectpage';
   static const String taskPage = '/taskpage';
   static const String samplePage = '/samplepage';
-
+  static const String AdminScreen = '/adminScreen';
   static Map<String, WidgetBuilder> getRoutes() {
     return {
       loginPage: (context) => const LoginPage(),
