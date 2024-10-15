@@ -1,18 +1,20 @@
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:taskflow_application/API/designation_model.dart';
 import 'package:taskflow_application/API/login_user_detail.dart';
 import 'package:taskflow_application/Classes/Device_Info.dart';
 import 'package:taskflow_application/Classes/manageUser_class.dart';
 import 'package:taskflow_application/Widgets/textfield.dart';
-
-import '../../Module/Utills/Global Class/ScreenSize.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UserProfilePage extends StatefulWidget {
   UserProfilePage({super.key, this.users, this.isCurrentUserProfile});
   late ManageUser? users;
   bool? isCurrentUserProfile;
+
   @override
   State<UserProfilePage> createState() => _ProfilePageState();
 }
@@ -20,6 +22,8 @@ class UserProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<UserProfilePage> {
   late UserDetail currentUser;
   bool isCurrentUser = false;
+  final ImagePicker _picker = ImagePicker();
+  XFile? _selectedImage;
 
   @override
   void initState() {
@@ -27,7 +31,109 @@ class _ProfilePageState extends State<UserProfilePage> {
     if (widget.users == null) {
       currentUser = Provider.of<UserDetail>(context, listen: false);
       isCurrentUser = true;
-      print("UserName${currentUser.fullname}");
+      print("UserName: ${currentUser.fullname}");
+    }
+  }
+
+  Future<void> _showImageSourceSheet() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(CupertinoIcons.photo),
+                title: const Text('Gallery'),
+                onTap: () {
+                  _pickImage(ImageSource.gallery);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(CupertinoIcons.camera),
+                title: const Text('Camera'),
+                onTap: () {
+                  _pickImage(ImageSource.camera);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? image = await _picker.pickImage(source: source);
+      if (image != null) {
+        setState(() {
+          _selectedImage = image;
+        });
+        // Upload the image after picking it
+        await _uploadProfileImage(File(image.path));
+      }
+    } catch (e) {
+      print("Error picking image: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to pick image. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _uploadProfileImage(File imageFile) async {
+    try {
+      const String url = "https://flow-backend-ic-production-932b.up.railway.app/api/user/updatePicture";
+      var request = http.MultipartRequest('PUT', Uri.parse(url));
+
+      // Attach the file to the request
+      request.files.add(await http.MultipartFile.fromPath('profileImage', imageFile.path));
+
+      // Add headers (ensure the token is correctly set)
+      request.headers.addAll({
+          "Content-Type": "application/json",
+          "Authorization":
+          "Bearer ${Provider
+              .of<UserDetail>(context, listen: false)
+              .token} "
+
+        //'Authorization': 'Bearer authToken', // Replace with a valid token
+      });
+
+      // Send the request
+      var response = await request.send();
+      var responseData = await response.stream.bytesToString();
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Image uploaded successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        print("Failed to upload image. Status code: ${response.statusCode}");
+        print("Response: $responseData");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to upload image. Please try again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      print("Error uploading image: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to upload image. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -36,37 +142,32 @@ class _ProfilePageState extends State<UserProfilePage> {
     return Scaffold(
       body: Column(
         children: [
-          // Header container for user picture, name, and designation
           pageHeaderContainer(),
           const SizedBox(height: 15),
-          // Profile fields displaying user information
           ProfileFieldWidget(
-              "Email",
-              isCurrentUser
-                  ? currentUser.email.toString()
-                  : widget.users!.email.toString(),
-              CupertinoIcons.envelope),
+            "Email",
+            isCurrentUser ? currentUser.email.toString() : widget.users!.email.toString(),
+            CupertinoIcons.envelope,
+          ),
           const SizedBox(height: 10),
           ProfileFieldWidget(
-              "Contact",
-              isCurrentUser
-                  ? currentUser.contact.toString()
-                  : widget.users!.contact.toString(),
-              CupertinoIcons.phone),
+            "Contact",
+            isCurrentUser ? currentUser.contact.toString() : widget.users!.contact.toString(),
+            CupertinoIcons.phone,
+          ),
           const SizedBox(height: 10),
           ProfileFieldWidget(
-              "Address",
-              isCurrentUser
-                  ? currentUser.address.toString()
-                  : widget.users!.address.toString(),
-              CupertinoIcons.text_badge_star),
+            "Address",
+            isCurrentUser ? currentUser.address.toString() : widget.users!.address.toString(),
+            CupertinoIcons.text_badge_star,
+          ),
           const SizedBox(height: 10),
           ProfileFieldWidget(
-              "Designation",
-              Provider.of<Designation>(context, listen: false)
-                  .getDesignationName(
-                  isCurrentUser ? currentUser.designationId.toString() : widget.users!.designationId.toString()),
-              CupertinoIcons.rocket),
+            "Designation",
+            Provider.of<Designation>(context, listen: false).getDesignationName(
+                isCurrentUser ? currentUser.designationId.toString() : widget.users!.designationId.toString()),
+            CupertinoIcons.rocket,
+          ),
         ],
       ),
     );
@@ -91,14 +192,9 @@ class _ProfilePageState extends State<UserProfilePage> {
         ),
         child: Column(
           children: [
-            SizedBox(
-              height: DeviceInfo.height * 0.04,
-            ),
+            SizedBox(height: DeviceInfo.height * 0.04),
             customNavigationBar(),
-            SizedBox(
-              height: DeviceInfo.height * 0.04,
-            ),
-            // Stack to overlay the pencil icon on the profile picture
+            SizedBox(height: DeviceInfo.height * 0.04),
             Center(
               child: Stack(
                 children: [
@@ -110,32 +206,37 @@ class _ProfilePageState extends State<UserProfilePage> {
                       height: DeviceInfo.width * 0.35,
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100)),
-                      child: Image.network(currentUser.picture as String),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: _selectedImage == null
+                          ? Image.asset(
+                        "assets/images/usericon.png",
+                        fit: BoxFit.cover,
+                      )
+                          : Image.file(
+                        File(_selectedImage!.path),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   Positioned(
                     bottom: 0,
                     right: 0,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      radius: 20,
-                      child: IconButton(
-                        icon: Icon(CupertinoIcons.pencil, size: 20, color: Colors.red.shade800),
-                        onPressed: () {
-                          // Handle image editing logic here
-                        },
+                    child: IconButton(
+                      icon: const Icon(
+                        CupertinoIcons.pencil,
+                        color: Colors.black,
+                        size: 28,
                       ),
+                      onPressed: _showImageSourceSheet,
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
             const SizedBox(height: 15),
             Text(
-              isCurrentUser
-                  ? currentUser.fullname.toString()
-                  : widget.users!.fullname.toString(),
+              isCurrentUser ? currentUser.fullname.toString() : widget.users!.fullname.toString(),
               style: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 15),
@@ -190,19 +291,17 @@ class _ProfilePageState extends State<UserProfilePage> {
             ),
           ),
           PopupMenuButton(
-            initialValue: 1,
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem(onTap: () {}, value: 1, child: const Text("Edit")),
-                PopupMenuItem(
-                    onTap: () {}, value: 2, child: const Text("Delete Account"))
-              ];
-            },
-            icon: const Icon(
-              CupertinoIcons.settings,
-              color: Colors.white,
-            ),
-          )
+              initialValue: 1,
+              itemBuilder: (context) {
+                return [
+                  PopupMenuItem(onTap: () {}, value: 1, child: const Text("Edit")),
+                  PopupMenuItem(onTap: () {}, value: 2, child: const Text("Delete Account"))
+                ];
+              },
+              icon: const Icon(
+                CupertinoIcons.settings,
+                color: Colors.white,
+              ))
         ],
       ),
     );
@@ -215,27 +314,17 @@ class _ProfilePageState extends State<UserProfilePage> {
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(width: 1, color: Colors.grey))),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Icon(fieldIcon, color: Colors.red.shade800),
               const SizedBox(width: 5),
-              Text(
-                "$title :",
-                style: TextStyle(color: Colors.black.withOpacity(0.7)),
-              ),
+              Text(title, style: TextStyle(color: Colors.black.withOpacity(0.7))),
             ],
           ),
-          SizedBox(width: MediaQuery.of(context).size.width / 24),
-          Flexible(
-            child: Text(
-              displayData,
-              textAlign: TextAlign.end,
-              style: TextStyle(color: Colors.black.withOpacity(0.7)),
-            ),
-          )
+          const Spacer(),
+          Text(displayData, style: TextStyle(color: Colors.black.withOpacity(0.7))),
         ],
       ),
     );

@@ -13,7 +13,7 @@ class UserDetail extends ChangeNotifier {
   String? companyId;
   String? token;
   //picture variable will be used later
-  String? picture;
+  String? profileImage;
 
 
 //method to set the user pereferences when the user body is get
@@ -29,8 +29,8 @@ class UserDetail extends ChangeNotifier {
     companyId = userData['user_']['companyId'].toString();
     token = userData['token'].toString();
     //uncomment the below to get the picture
-    picture = userData['user_']['picture'].toString();
-    print("Picture Details: ${picture}");
+    profileImage = userData['user_']['profileImage'].toString();
+    print("Picture Details: ${profileImage}");
     //setting the User Preferences into the local store to analyze the user login and then access him through the local storage
     setUserPreferences();
   }
@@ -50,8 +50,8 @@ void setUserDetailByPreferences() async{
     companyId = prefs.getString("companyId");
     token = prefs.getString("token");
     //uncomment the  below to store the picture preferences;
-    picture = prefs.getString("picture");
-  print("PICTURE DETAILS ${picture}");
+    profileImage = prefs.getString("picture");
+  print("PICTURE DETAILS ${profileImage}");
 
 }
 
@@ -68,10 +68,10 @@ void setUserDetailByPreferences() async{
     await prefs.setString("jobTypeId", jobTypeId.toString());
     await prefs.setString("companyId", companyId.toString());
     await prefs.setString("token", token.toString());
-    await prefs.setString("picture", picture.toString());
+    await prefs.setString("picture", profileImage.toString());
 
     //uncomment the below to store the picture preferences
-    //await prefs.setString("Picture", "");
+    await prefs.setString("Picture", "");
   }
 
 
@@ -93,6 +93,6 @@ void setUserDetailByPreferences() async{
     await prefs.remove("picture");
 
      // Uncomment the below to clear the picture preferences (if it's named differently)
-     // await prefs.remove("Picture");
+     await prefs.remove("Picture");
   }
 }

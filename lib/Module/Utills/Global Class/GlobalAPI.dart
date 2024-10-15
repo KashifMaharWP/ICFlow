@@ -18,6 +18,8 @@ class ApiDetail{
   static String getAllComments="comment/getAllComments";
   static String deleteComment="comment/delete";
   static String updateComment="comment/update";
+  static String UserProfilePage="user/updatePicture";
+
 
 }
 
