@@ -1,11 +1,7 @@
-//import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:taskflow_application/Widgets/rounded_button.dart';
-//import '../../../AttendanceModule/Utills/Global Class/ColorHelper.dart';
-//import '../../../AttendanceModule/Utills/Global Class/ScreenSize.dart';
 import '../../../Utills/Global Class/ColorHelper.dart';
 import '../../../Utills/Global Class/ScreenSize.dart';
 import '../Provider/commentProvider.dart';
@@ -20,13 +16,15 @@ class CommentUserScreen extends StatefulWidget {
 class _CommentUserScreenState extends State<CommentUserScreen> {
   final TextEditingController commentController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _showComments = false; // Track if the comments should be shown
 
   @override
   void initState() {
     super.initState();
     // Fetch the user's comments when the screen is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<CommentProvider>(context, listen: false).getMyComments(context);
+      Provider.of<CommentProvider>(context, listen: false)
+          .getMyComments(context);
     });
   }
 
@@ -45,10 +43,16 @@ class _CommentUserScreenState extends State<CommentUserScreen> {
             style: GoogleFonts.roboto(
               textStyle: TextStyle(
                 fontSize: screenWidth / 15,
-                fontWeight:FontWeight.w300,
+                fontWeight: FontWeight.w300,
                 color: whiteColor,
               ),
             ),
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop(); // Navigate back to the main screen
+            },
           ),
         ),
         body: Padding(
@@ -57,7 +61,20 @@ class _CommentUserScreenState extends State<CommentUserScreen> {
             children: [
               inputCommentSection(),
               const SizedBox(height: 20),
-              Expanded(child: commentHistorySection()),
+              RoundedButton(
+                title: _showComments ? 'Hide Complain' : 'View Complain',
+                loading: false,
+                on_Tap: () {
+                  // Toggle the visibility of the comments section
+                  setState(() {
+                    _showComments = !_showComments;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              _showComments
+                  ? Expanded(child: commentHistorySection())
+                  : const SizedBox(),
             ],
           ),
         ),
@@ -79,7 +96,8 @@ class _CommentUserScreenState extends State<CommentUserScreen> {
           TextFormField(
             controller: commentController,
             decoration: const InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 borderSide: BorderSide(color: Colors.grey, width: 1.5),
@@ -112,8 +130,10 @@ class _CommentUserScreenState extends State<CommentUserScreen> {
                   loading: commentProvider.isLoading,
                   on_Tap: () {
                     if (_formKey.currentState!.validate()) {
-                      commentProvider.addComment(context, commentController.text.trim());
-                      commentController.clear(); // Clear the input after submission
+                      commentProvider.addComment(
+                          context, commentController.text.trim());
+                      commentController
+                          .clear(); // Clear the input after submission
                     }
                   },
                 );
@@ -133,7 +153,8 @@ class _CommentUserScreenState extends State<CommentUserScreen> {
         }
         if (commentProvider.comments.isEmpty) {
           return const Center(
-            child: Text('No comments found', style: TextStyle(color: Colors.grey)),
+            child:
+                Text('No comments found', style: TextStyle(color: Colors.grey)),
           );
         }
         var commentData = commentProvider.comments.reversed.toList();
@@ -160,7 +181,8 @@ class _CommentUserScreenState extends State<CommentUserScreen> {
                   ],
                 ),
                 child: ListTile(
-                  leading: const Icon(Icons.comment, color: Colors.redAccent, size: 30),
+                  leading: const Icon(Icons.comment,
+                      color: Colors.redAccent, size: 30),
                   title: InkWell(
                     onTap: () {
                       _showContentDialog(context, content);
@@ -178,7 +200,8 @@ class _CommentUserScreenState extends State<CommentUserScreen> {
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.more_vert),
-                    onPressed: () => _showEditDeleteOptions(context, comment, commentId),
+                    onPressed: () =>
+                        _showEditDeleteOptions(context, comment, commentId),
                   ),
                 ),
               ),
@@ -212,7 +235,8 @@ class _CommentUserScreenState extends State<CommentUserScreen> {
     );
   }
 
-  void _showEditDeleteOptions(BuildContext context, dynamic comment, String commentID) {
+  void _showEditDeleteOptions(
+      BuildContext context, dynamic comment, String commentID) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -231,14 +255,19 @@ class _CommentUserScreenState extends State<CommentUserScreen> {
               children: [
                 const Text(
                   'Choose an Option',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87),
                 ),
                 const SizedBox(height: 16),
                 ListTile(
                   leading: const Icon(Icons.edit, color: Colors.blue),
-                  title: const Text('Modify', style: TextStyle(fontWeight: FontWeight.w600)),
+                  title: const Text('Modify',
+                      style: TextStyle(fontWeight: FontWeight.w600)),
                   tileColor: Colors.blue.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                   onTap: () {
                     Navigator.pop(context);
                     _editComment(comment, commentID);
@@ -247,9 +276,11 @@ class _CommentUserScreenState extends State<CommentUserScreen> {
                 const SizedBox(height: 10),
                 ListTile(
                   leading: const Icon(Icons.delete, color: Colors.red),
-                  title: const Text('Withdraw', style: TextStyle(fontWeight: FontWeight.w600)),
+                  title: const Text('Delete',
+                      style: TextStyle(fontWeight: FontWeight.w600)),
                   tileColor: Colors.red.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                   onTap: () {
                     Navigator.pop(context);
                     _deleteComment(commentID);
@@ -264,47 +295,55 @@ class _CommentUserScreenState extends State<CommentUserScreen> {
   }
 
   void _editComment(dynamic comment, String commentID) {
-    commentController.text = comment['content'];
+    // Use a separate controller for the edit dialog
+    TextEditingController editCommentController = TextEditingController(text: comment['content']);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Modify Complain'),
-          content: TextFormField(
-            controller: commentController,
-            decoration: const InputDecoration(hintText: 'Enter your updated complain'),
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Save'),
-              onPressed: () {
-                String updatedComment = commentController.text.trim();
-                if (updatedComment.isNotEmpty) {
-                  Provider.of<CommentProvider>(context, listen: false)
-                      .updateComment(context, commentID, updatedComment)
-                      .then((_) {
-                    // Close the dialog after the update
-                    Navigator.of(context).pop();
-                  });
-                  commentController.clear(); // Clear the controller after the update
-                } else {
-                  print("Complain cannot be empty");
-                }
-              },
-            ),
-          ],
+        return StatefulBuilder(
+          builder: (BuildContext dialogContext, StateSetter setState) {
+            return AlertDialog(
+              title: const Text('Modify Complain'),
+              content: TextFormField(
+                controller: editCommentController,
+                decoration: const InputDecoration(
+                  hintText: 'Enter your updated complain',
+                ),
+              ),
+              actions: [
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text('Save'),
+                  onPressed: () {
+                    String updatedComment = editCommentController.text.trim();
+                    if (updatedComment.isNotEmpty) {
+                      Provider.of<CommentProvider>(context, listen: false)
+                          .updateComment(context, commentID, updatedComment)
+                          .then((_) {
+                        // Close the dialog after the update
+                        Navigator.of(dialogContext).pop();
+                      });
+                    }
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
     );
   }
 
-  void _deleteComment(String id) {
-    Provider.of<CommentProvider>(context, listen: false).deleteComment(context, id);
+
+
+  void _deleteComment(String commentID) {
+    Provider.of<CommentProvider>(context, listen: false)
+        .deleteComment(context, commentID);
   }
 }
